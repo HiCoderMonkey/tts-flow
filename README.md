@@ -129,3 +129,7 @@ try {
 ---
 
 如需详细接口文档、错误码表或二次开发指导，请查阅 `backend/docs/exceptions.md` 或联系项目维护者。
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
