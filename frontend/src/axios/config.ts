@@ -1,11 +1,19 @@
 import { AxiosResponse, InternalAxiosRequestConfig } from './types'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import qs from 'qs'
 import { SUCCESS_CODE, TRANSFORM_REQUEST_DATA } from '@/constants'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { objToFormData } from '@/utils'
+import { getAccessToken, removeAccessToken } from '@/utils/cookie'
+import router from '@/router'
 
 const defaultRequestInterceptors = (config: InternalAxiosRequestConfig) => {
+  // 添加token到请求头
+  const token = getAccessToken()
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+
   if (
     config.method === 'post' &&
     config.headers['Content-Type'] === 'application/x-www-form-urlencoded'
@@ -49,6 +57,31 @@ const defaultResponseInterceptors = (response: AxiosResponse) => {
       const userStore = useUserStoreWithOut()
       userStore.logout()
     }
+  }
+}
+
+/**
+ * 处理401未授权错误
+ */
+export const handleUnauthorized = async () => {
+  // 清除token
+  removeAccessToken()
+  
+  // 显示确认对话框
+  try {
+    // await ElMessageBox.confirm(
+    //   '登录已过期，请重新登录',
+    //   '提示',
+    //   {
+    //     confirmButtonText: '重新登录',
+    //     cancelButtonText: '取消',
+    //     type: 'warning',
+    //   }
+    // )
+    // 用户点击确认，跳转到登录页
+    // router.push('/login')
+  } catch {
+    // 用户点击取消，不做任何操作
   }
 }
 

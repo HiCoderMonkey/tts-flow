@@ -2,18 +2,19 @@
 import { reactive, ref, watch, onMounted, unref } from 'vue'
 import { Form, FormSchema } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElCheckbox, ElLink } from 'element-plus'
+import { ElCheckbox, ElLink, ElMessage } from 'element-plus'
 import { useForm } from '@/hooks/web/useForm'
 import { loginApi, getTestRoleApi, getAdminRoleApi } from '@/api/login'
 import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
-import { UserType } from '@/api/login/types'
+import { UserType, UserInfo, UserLoginType } from '@/api/login/types'
 import { useValidator } from '@/hooks/web/useValidator'
 import { Icon } from '@/components/Icon'
 import { useUserStore } from '@/store/modules/user'
 import { BaseButton } from '@/components/Button'
+import { setAccessToken } from '@/utils/cookie'
 
 const { required } = useValidator()
 
@@ -57,7 +58,7 @@ const schema = reactive<FormSchema[]>([
       span: 24
     },
     componentProps: {
-      placeholder: 'admin or test'
+      placeholder: '请输入用户名'
     }
   },
   {
@@ -72,7 +73,7 @@ const schema = reactive<FormSchema[]>([
       style: {
         width: '100%'
       },
-      placeholder: 'admin or test',
+      placeholder: '请输入密码',
       // 按下enter键触发登录
       onKeydown: (_e: any) => {
         if (_e.key === 'Enter') {
@@ -236,20 +237,33 @@ const signIn = async () => {
       const formData = await getFormData<UserType>()
 
       try {
-        const res = await loginApi(formData)
+        // 调用真实登录接口
+        const res = await loginApi(formData as UserLoginType)
 
-        if (res) {
+        if (res && res.data) {
+          // 保存token到cookie
+          const { access_token } = res.data
+          setAccessToken(access_token, remember.value ? 30 : 7) // 记住我30天，否则7天
+          
+          ElMessage.success('登录成功')
+
           // 是否记住我
           if (unref(remember)) {
             userStore.setLoginInfo({
               username: formData.username,
-              password: formData.password
+              password: formData.password!
             })
           } else {
             userStore.setLoginInfo(undefined)
           }
           userStore.setRememberMe(unref(remember))
-          userStore.setUserInfo(res.data)
+          
+          // 设置用户信息（这里可以根据需要调整）
+          userStore.setUserInfo({
+            username: formData.username,
+            // 其他用户信息可以从后端返回的数据中获取
+          } as UserInfo)
+          
           // 是否使用动态路由
           if (appStore.getDynamicRouter) {
             getRole()
@@ -262,6 +276,9 @@ const signIn = async () => {
             push({ path: redirect.value || permissionStore.addRouters[0].path })
           }
         }
+      } catch (error: any) {
+        console.error('登录失败:', error)
+        ElMessage.error(error?.message || '登录失败，请检查用户名和密码')
       } finally {
         loading.value = false
       }
@@ -275,6 +292,7 @@ const getRole = async () => {
   const params = {
     roleName: formData.username
   }
+  debugger
   const res =
     appStore.getDynamicRouter && appStore.getServerDynamicRouter
       ? await getAdminRoleApi(params)

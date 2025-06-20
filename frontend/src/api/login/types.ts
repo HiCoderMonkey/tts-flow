@@ -17,7 +17,21 @@ export interface LoginResponse {
 
 export interface UserType {
   username: string
-  password: string
-  role: string
-  roleId: string
+  password?: string
+  role?: string
+  roleId?: string
+  email?: string
+  full_name?: string
+  is_active?: boolean
+  is_superuser?: boolean
+  is_admin?: boolean
+}
+
+export interface UserInfo {
+  username: string
+  email?: string
+  full_name?: string
+  is_active?: boolean
+  is_superuser?: boolean
+  is_admin?: boolean
 }

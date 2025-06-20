@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.core.config import settings
 from app.core.database import init_db, close_db
+from app.core.auth_middleware import AuthMiddleware
 from app.api.v1 import api_router
 from app.utils.response import fail, success
 from app.core.exceptions import (
@@ -34,6 +35,9 @@ app = FastAPI(
     debug=settings.debug,
     lifespan=lifespan
 )
+
+# 添加认证中间件
+app.add_middleware(AuthMiddleware)
 
 # 自定义异常处理
 @app.exception_handler(BaseException)

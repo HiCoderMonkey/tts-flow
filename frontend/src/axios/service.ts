@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios'
-import { defaultRequestInterceptors, defaultResponseInterceptors } from './config'
+import { defaultRequestInterceptors, defaultResponseInterceptors, handleUnauthorized } from './config'
 
 import { AxiosInstance, InternalAxiosRequestConfig, RequestConfig, AxiosResponse } from './types'
 import { ElMessage } from 'element-plus'
@@ -36,6 +36,13 @@ axiosInstance.interceptors.response.use(
     debugger
     console.log('err： ' + error) // for debug
     const response = error.response as AxiosResponse<any>
+    
+    // 处理401未授权错误
+    if (response?.status === 401) {
+      handleUnauthorized()
+      return Promise.reject(error)
+    }
+    
     const msg = response?.data?.data?.msg
     if (msg) {
       ElMessage.error(msg)
@@ -66,6 +73,12 @@ const service = {
           debugger
           // 统一处理后端错误消息
           if (err.response && err.response.status !== 200) {
+            // 处理401错误
+            if (err.response.status === 401) {
+              handleUnauthorized()
+              return
+            }
+            
             const msg = err.response.data?.data?.msg
             if (msg) {
               ElMessage.error(msg)

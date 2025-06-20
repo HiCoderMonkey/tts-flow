@@ -144,6 +144,12 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       port: 4000,
       proxy: {
         // 选项写法
+        '/tts-flow-backend-api/mock': {
+          target: 'http://localhost:4000',
+          changeOrigin: true,
+          ws: true,
+          rewrite: (path) => path.replace(/^\/tts-flow-backend-api\/mock/, '/mock'),
+        },
         '/tts-flow-backend-api': {
           target: 'http://localhost:8000',
           changeOrigin: true,
