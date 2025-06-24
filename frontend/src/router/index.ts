@@ -464,7 +464,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     name: 'TTSFlow',
     meta: {
       title: t('router.ttsFlow'),
-      icon: 'vi-mdi:text-to-speech',
+      icon: 'vi-mdi:text-to-speech'
     },
     children: [
       {

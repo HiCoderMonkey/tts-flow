@@ -2,7 +2,7 @@
   <div>
     <el-table :data="paramList" :border="true" type="selection" style="width: 100%">
       <el-table-column prop="key" label="KEY" width="160">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <div v-if="scope.row.keyType !== 'custom'">
             <span class="required">{{ scope.row.required ? '*' : '' }}</span>
             {{ scope.row.key }}
@@ -13,12 +13,11 @@
             placeholder="请输入"
             size="small"
             @change="handleKeyChange($event, scope.row)"
-          >
-          </el-input>
+          />
         </template>
       </el-table-column>
       <el-table-column prop="value" label="VALUE">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <value-collector
             class="value-select"
             :value="param[scope.row.key]"
@@ -28,11 +27,11 @@
             :defaultValue="defaultValue"
             :lf="lf"
             @change="handleValueChange($event, scope.row)"
-          ></value-collector>
+          />
         </template>
       </el-table-column>
       <el-table-column label="操作" width="60">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button
             icon="el-icon-delete"
             circle
@@ -40,7 +39,7 @@
             size="mini"
             :disabled="!!scope.row.required"
             @click="removeParam(scope.row)"
-          ></el-button>
+          />
         </template>
       </el-table-column>
     </el-table>
@@ -72,6 +71,13 @@ export default {
       handler(nv) {
         const param = this.convertParam(nv)
         this.param = param
+      }
+    },
+    paramList: {
+      immediate: true,
+      deep: true,
+      handler(nv) {
+        this.list = nv ? JSON.parse(JSON.stringify(nv)) : []
       }
     }
   },
@@ -135,11 +141,12 @@ export default {
       this.$emit('change', param)
     },
     removeParam(row) {
-      const idx = findIndex(this.paramList, (o) => o.key === row.key)
-      this.paramList.splice(idx, 1)
+      const idx = findIndex(this.list, (o) => o.key === row.key)
+      this.list.splice(idx, 1)
       delete this.param[row.key]
       const param = this.formatParam()
       this.$emit('change', param)
+      this.$emit('update:paramList', this.list)
     },
     addCustom() {
       const item = {
@@ -148,7 +155,8 @@ export default {
         required: 0,
         keyType: 'custom'
       }
-      this.paramList.push(item)
+      this.list.push(item)
+      this.$emit('update:paramList', this.list)
     }
   },
   components: {

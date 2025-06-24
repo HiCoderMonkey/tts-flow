@@ -53,7 +53,7 @@
             :key="item.formKey + item.version"
             :label="item.name"
             :value="item.formKey"
-          ></el-option>
+          />
         </el-select>
       </div>
       <div class="panel-item item-wrap">
@@ -64,7 +64,7 @@
           placeholder="请输入系统路由，例如：'preview'"
           size="small"
           @change="(val) => handleParamChange('path', val)"
-        ></el-input>
+        />
       </div>
     </div>
     <div class="panel-item item-wrap" v-else>
@@ -77,7 +77,7 @@
         placeholder="请输入目标页面系统路径，例如：'path1/path2/path3'"
         size="small"
         @change="(val) => handleParamChange('customUrl', val)"
-      ></el-input>
+      />
       <el-input
         v-else
         type="url"
@@ -86,7 +86,7 @@
         placeholder="请输入目标页面，例如：'https://i.xiaojukeji.com?q=xxx&t=yyy'"
         size="small"
         @change="handleCustomUrlChange"
-      ></el-input>
+      />
     </div>
 
     <div class="item-wrap">
@@ -99,7 +99,7 @@
           placeholder="请输入"
           size="small"
           @change="handleRouteParamKeyChange($event, idx)"
-        ></el-input>
+        />
         <div class="pj-label">VALUE</div>
         <value-collector
           class="value-select"
@@ -108,11 +108,21 @@
           :types="types"
           :lf="lf"
           @change="handleRouteParamValueChange($event, idx)"
-        ></value-collector>
+        />
 
-        <el-link class="delete-button" type="danger" icon="el-icon-delete" @click="deleteParam(idx)"></el-link>
+        <el-link
+          class="delete-button"
+          type="danger"
+          icon="el-icon-delete"
+          @click="deleteParam(idx)"
+        />
       </div>
-      <el-link type="primary" class="add-button" icon="el-icon-circle-plus-outline" @click="addParam">
+      <el-link
+        type="primary"
+        class="add-button"
+        icon="el-icon-circle-plus-outline"
+        @click="addParam"
+      >
         添加参数
       </el-link>
     </div>

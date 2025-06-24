@@ -244,7 +244,7 @@ const signIn = async () => {
           // 保存token到cookie
           const { access_token } = res.data
           setAccessToken(access_token, remember.value ? 30 : 7) // 记住我30天，否则7天
-          
+
           ElMessage.success('登录成功')
 
           // 是否记住我
@@ -257,13 +257,13 @@ const signIn = async () => {
             userStore.setLoginInfo(undefined)
           }
           userStore.setRememberMe(unref(remember))
-          
+
           // 设置用户信息（这里可以根据需要调整）
           userStore.setUserInfo({
-            username: formData.username,
+            username: formData.username
             // 其他用户信息可以从后端返回的数据中获取
           } as UserInfo)
-          
+
           // 是否使用动态路由
           if (appStore.getDynamicRouter) {
             getRole()

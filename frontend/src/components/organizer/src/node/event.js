@@ -5,34 +5,29 @@ class EventNodeView extends base.view {}
 
 class EventNodeModel extends base.model {
   getOutlineStyle() {
-    const style = super.getOutlineStyle();
-    style.stroke = 'none';
-    style.hover.stroke = 'none';
-    return style;
+    const style = super.getOutlineStyle()
+    style.stroke = 'none'
+    style.hover.stroke = 'none'
+    return style
   }
   getDefaultAnchor() {
-    const {
-      id,
-      x,
-      y,
-      width,
-    } = this;
-    const anchors = [];
+    const { id, x, y, width } = this
+    const anchors = []
     anchors.push({
       x: x + width / 2,
       y,
       id: `${id}_outgoing`,
-      type: "outgoing"
-    });
-    return anchors;
+      type: 'outgoing'
+    })
+    return anchors
   }
-  getNodeName () {
+  getNodeName() {
     if (this.properties && this.properties.event && this.properties.event.keyDefine) {
       return this.properties.name + this.properties.event.keyDefine
     }
     return this.properties.name
   }
-  getNodeAbstract () {
+  getNodeAbstract() {
     const title = '节点事件'
     const content = []
     let showButton = true
@@ -51,17 +46,17 @@ class EventNodeModel extends base.model {
     return {
       title,
       content,
-      showButton,
+      showButton
     }
   }
-  getNodeLogo () {
+  getNodeLogo() {
     if (this.properties && this.properties.componentName === 'pageInit') {
       return eventNodeMap.pageInit.logo
     } else {
       return this.properties && this.properties.logo
     }
   }
-  getNodeClassName () {
+  getNodeClassName() {
     return 'event'
   }
 }

@@ -56,7 +56,7 @@ export const commonNodeMap = {
     label: '数据转换',
     value: 'dataConvert',
     logo: 'https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/data_trans.png'
-  },
+  }
 }
 
 export const eventNodeMap = {
@@ -110,7 +110,8 @@ export const toolMap = {
   }
 }
 
-export const defaultLogo = 'https://s3-gzpu.didistatic.com/tiyan-base-store/form-editor/pc/icon_anniu@2x.png'
+export const defaultLogo =
+  'https://s3-gzpu.didistatic.com/tiyan-base-store/form-editor/pc/icon_anniu@2x.png'
 
 export const requestMethodMap = [
   {

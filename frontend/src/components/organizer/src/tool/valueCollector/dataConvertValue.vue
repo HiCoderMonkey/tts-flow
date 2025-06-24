@@ -1,7 +1,19 @@
 <template>
   <div>
-    <el-select v-model="nodeId" size="small" placeholder="请选择数据节点" filterable @change="handleChange">
-      <el-option v-for="item in options" :key="item.value" :label="item.label" size="small" :value="item.value">
+    <el-select
+      v-model="nodeId"
+      size="small"
+      placeholder="请选择数据节点"
+      filterable
+      @change="handleChange"
+    >
+      <el-option
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        size="small"
+        :value="item.value"
+      >
         <span style="float: left" @mouseenter.stop="handleMouseEnter(item.value)">
           {{ item.label }}
         </span>
@@ -62,7 +74,9 @@ export default {
       const data = this.lf.getGraphData()
       console.log('data --->>>', data)
       const { nodes } = data
-      const dcNodes = nodes.filter((node) => node.properties.componentName === 'dataConvert' && node.properties.dc)
+      const dcNodes = nodes.filter(
+        (node) => node.properties.componentName === 'dataConvert' && node.properties.dc
+      )
 
       const options = dcNodes.map((node) => {
         return {

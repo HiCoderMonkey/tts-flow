@@ -9,14 +9,15 @@
         <el-button type="primary" @click="saveFlow">保存配置</el-button>
       </div>
     </div>
-    
+
     <div class="canvas-content">
       <logic-panel
         ref="logicPanelRef"
         class="logic-panel-wrapper"
         :context="context"
         :info="info"
-      ></logic-panel>
+        @update-logic-list="context.logicList = $event"
+      />
     </div>
   </div>
 </template>
@@ -47,33 +48,15 @@ const getFlowDetail = async () => {
   try {
     const res = await getTTSFlow(flowId.value)
     const flowData = res as any
-    
+
     flowName.value = flowData.name
-    
+
     // 如果有现有的flow_config，加载到画布
     if (flowData.flow_config && flowData.flow_config.logicList) {
-      context.logicList = flowData.flow_config.logicList
+      context.logicList = []
     } else {
       // 默认配置
-      context.logicList = [
-        {
-          id: 'text_input',
-          type: 'input',
-          name: '文本输入',
-          config: {
-            placeholder: '请输入要转换的文本'
-          }
-        },
-        {
-          id: 'tts_engine',
-          type: 'tts',
-          name: 'TTS引擎',
-          config: {
-            voice: 'zh-CN-XiaoxiaoNeural',
-            speed: 1.0
-          }
-        }
-      ]
+      context.logicList = []
     }
   } catch (error) {
     console.error('获取工作流详情失败:', error)
@@ -88,13 +71,13 @@ const saveFlow = async () => {
     const currentConfig = {
       logicList: context.logicList
     }
-    
+
     // 更新工作流
     await updateTTSFlow(flowId.value, {
       name: flowName.value,
       flow_config: currentConfig
     })
-    
+
     ElMessage.success('保存成功')
   } catch (error) {
     console.error('保存失败:', error)
@@ -159,4 +142,4 @@ onMounted(() => {
   background: #eaecef;
   border: 1px solid #ccc;
 }
-</style> 
+</style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="node-add-title">添加通用节点:{{model.id}}</div>
+    <div class="node-add-title">添加通用节点:{{ model.id }}</div>
     <ul>
       <li @click="clickMe">11</li>
       <li>14</li>
@@ -18,12 +18,9 @@ export default {
     model: Object
   },
   methods: {
-    clickMe () {
-    }
+    clickMe() {}
   }
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

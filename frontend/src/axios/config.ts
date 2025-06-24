@@ -66,7 +66,7 @@ const defaultResponseInterceptors = (response: AxiosResponse) => {
 export const handleUnauthorized = async () => {
   // 清除token
   removeAccessToken()
-  
+
   // 显示确认对话框
   try {
     // await ElMessageBox.confirm(

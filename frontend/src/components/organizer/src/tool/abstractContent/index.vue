@@ -24,8 +24,10 @@ export default {
   },
   data() {
     return {
-      eventIcon: 'https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/pop_event.png',
-      reactionIcon: 'https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/pop_reaction.png'
+      eventIcon:
+        'https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/pop_event.png',
+      reactionIcon:
+        'https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/pop_reaction.png'
     }
   },
   methods: {

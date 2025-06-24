@@ -50,7 +50,6 @@ class EventEmitter {
       let { length } = es
       for (let i = 0; i < length; i++) {
         if (!es[i]) {
-          // eslint-disable-next-line no-continue
           continue
         }
         const { callback, once } = es[i]

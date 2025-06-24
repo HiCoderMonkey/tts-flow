@@ -33,8 +33,7 @@
           :label="item.label"
           size="small"
           :value="item.value"
-        >
-        </el-option>
+        />
       </el-select>
 
       <el-select
@@ -52,33 +51,20 @@
           :label="item.label"
           size="small"
           :value="item.value"
-        >
-        </el-option>
+        />
       </el-select>
     </div>
     <!-- curl语句导入 -->
     <div class="panel-item item-wrap" v-if="fetchMode === 'custom'">
-      <CurlImport @import="$_importData"></CurlImport>
+      <CurlImport @import="$_importData" />
     </div>
     <div class="panel-item item-wrap" v-if="fetchMode === 'custom'">
       <div class="ds-label">请求接口名称：</div>
-      <el-input
-        v-model="requestName"
-        placeholder="请输入"
-        size="small"
-        @change="handleDsChange"
-      >
-      </el-input>
+      <el-input v-model="requestName" placeholder="请输入" size="small" @change="handleDsChange" />
     </div>
     <div class="panel-item item-wrap" v-if="fetchMode === 'custom'">
       <div class="ds-label">请求接口地址：</div>
-      <el-input
-        v-model="requestUrl"
-        placeholder="请输入"
-        size="small"
-        @change="handleDsChange"
-      >
-      </el-input>
+      <el-input v-model="requestUrl" placeholder="请输入" size="small" @change="handleDsChange" />
     </div>
     <div class="panel-item item-wrap" v-if="fetchMode === 'custom'">
       <div class="ds-label">请求方法：</div>
@@ -96,8 +82,7 @@
           :label="item.label"
           size="small"
           :value="item.value"
-        >
-        </el-option>
+        />
       </el-select>
     </div>
     <div class="item-wrap">
@@ -110,7 +95,7 @@
             :paramList="queryParamList"
             :context="context"
             @change="handleQueryParamsChange"
-          ></param-collector>
+          />
         </el-tab-pane>
         <el-tab-pane label="Body" name="body">
           <param-collector
@@ -119,7 +104,7 @@
             :paramList="bodyParamList"
             :context="context"
             @change="handleBodyParamsChange"
-          ></param-collector>
+          />
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -133,16 +118,16 @@
           active-text="是"
           inactive-text="否"
           size="mini"
-        ></el-switch>
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import paramCollector from "../paramCollector/index.vue";
-import { requestMethodMap } from "../../util/typeMap";
-import CurlImport from "./curlImport.vue";
+import paramCollector from '../paramCollector/index.vue'
+import { requestMethodMap } from '../../util/typeMap'
+import CurlImport from './curlImport.vue'
 
 export default {
   props: {
@@ -151,22 +136,22 @@ export default {
     current: Object,
     value: {
       type: Object,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
   model: {
-    prop: "value",
-    event: "change",
+    prop: 'value',
+    event: 'change'
   },
   data() {
     return {
       requestMethodMap,
-      requestName: "", // 自定义接口名称
-      requestUrl: "", // 自定义接口地址
-      requestMethod: "GET", // 自定义接口请求方法
-      fetchMode: "direct",
-      apiId: "",
-      activeType: "query",
+      requestName: '', // 自定义接口名称
+      requestUrl: '', // 自定义接口地址
+      requestMethod: 'GET', // 自定义接口请求方法
+      fetchMode: 'direct',
+      apiId: '',
+      activeType: 'query',
       continueOnError: false,
       apiList: [],
       options: [],
@@ -175,106 +160,102 @@ export default {
       queryParams: [],
       bodyParams: [],
       headerParams: [],
-      isFetching: false,
-    };
+      isFetching: false
+    }
   },
   watch: {
-    "value.fetchMode": {
+    'value.fetchMode': {
       immediate: true,
       async handler(nv) {
-        this.fetchMode = nv || "direct";
-      },
+        this.fetchMode = nv || 'direct'
+      }
     },
-    "value.id": {
+    'value.id': {
       immediate: true,
       async handler(nv) {
-        if (this.value.fetchMode === "custom") return;
-        this.apiId = nv;
-        if (!nv) return;
+        if (this.value.fetchMode === 'custom') return
+        this.apiId = nv
+        if (!nv) return
         if (!(this.options && this.options.length)) {
-          await this.getApiOptions();
+          await this.getApiOptions()
         }
-        this.getParamList();
-      },
+        this.getParamList()
+      }
     },
     value: {
       immediate: true,
       deep: true,
       async handler(nv) {
-        this.queryParams = (nv && nv.queryParams) || [];
-        this.bodyParams = (nv && nv.bodyParams) || [];
-        this.headerParams = (nv && nv.headerParams) || [];
-        this.continueOnError = nv.continueOnError;
-        if (this.value.fetchMode === "custom") {
-          this.requestName = nv && nv.name;
-          this.requestUrl = nv && nv.url;
-          this.requestMethod = nv && nv.method;
-          this.queryParamList = this.queryParams;
-          this.bodyParamList = this.bodyParams;
+        this.queryParams = (nv && nv.queryParams) || []
+        this.bodyParams = (nv && nv.bodyParams) || []
+        this.headerParams = (nv && nv.headerParams) || []
+        this.continueOnError = nv.continueOnError
+        if (this.value.fetchMode === 'custom') {
+          this.requestName = nv && nv.name
+          this.requestUrl = nv && nv.url
+          this.requestMethod = nv && nv.method
+          this.queryParamList = this.queryParams
+          this.bodyParamList = this.bodyParams
         }
-      },
-    },
+      }
+    }
   },
   created() {
-    this.getApiOptions();
+    this.getApiOptions()
   },
   computed: {
     api() {
-      return this.apiList.find((item) => item.id === this.apiId) || {};
-    },
+      return this.apiList.find((item) => item.id === this.apiId) || {}
+    }
   },
   methods: {
     async getApiOptions() {
-      this.options = [];
+      this.options = []
     },
     getParamList() {
-      const resourceId =
-        this.fetchMode === "direct" ? this.api.id : this.api.resourceId;
-      if (!resourceId) return;
+      const resourceId = this.fetchMode === 'direct' ? this.api.id : this.api.resourceId
+      if (!resourceId) return
     },
     handleDsTypeChange(e) {
-      this.reset();
-      this.apiId = undefined;
-      this.getApiOptions();
+      this.reset()
+      this.apiId = undefined
+      this.getApiOptions()
     },
     handleDsChange(e) {
-      this.reset();
-      this.apiId = e;
-      this.handleChange();
+      this.reset()
+      this.apiId = e
+      this.handleChange()
     },
     handleQueryParamsChange(e) {
-      this.queryParams = e;
-      this.handleChange();
+      this.queryParams = e
+      this.handleChange()
     },
     handleBodyParamsChange(e) {
-      this.bodyParams = e;
-      this.handleChange();
+      this.bodyParams = e
+      this.handleChange()
     },
     handleErrorChange() {
-      this.handleChange();
+      this.handleChange()
     },
     handleChange() {
-      let ds;
-      if (this.fetchMode === "custom") {
+      let ds
+      if (this.fetchMode === 'custom') {
         // 如果是自定义接口
         ds = {
           name: this.requestName,
           url: this.requestUrl,
           method: this.requestMethod,
-          fetchMode: "custom",
+          fetchMode: 'custom',
           queryParams: this.queryParams,
           bodyParams: this.bodyParams,
-          headerParams: this.headerParams,
-        };
+          headerParams: this.headerParams
+        }
       } else {
         // 如果是数据源接口
         ds = {
           id: this.api.id,
           name: this.api.name,
-          key:
-            this.fetchMode === "direct"
-              ? this.api.resourceKey
-              : this.api.apiKey,
+          key: this.fetchMode === 'direct' ? this.api.resourceKey : this.api.apiKey,
           url: this.api.httpApiResourceVO.url,
           method: this.api.httpApiResourceVO.requestType,
           contentType: this.api.httpApiResourceVO.contentType,
@@ -285,32 +266,32 @@ export default {
           queryParams: this.queryParams,
           bodyParams: this.bodyParams,
           headerParams: this.headerParams,
-          continueOnError: this.continueOnError,
-        };
+          continueOnError: this.continueOnError
+        }
       }
-      this.$emit("change", ds);
+      this.$emit('change', ds)
     },
     reset() {
-      this.queryParamList = [];
-      this.bodyParamList = [];
-      this.queryParams = [];
-      this.bodyParams = [];
-      this.headerParams = [];
+      this.queryParamList = []
+      this.bodyParamList = []
+      this.queryParams = []
+      this.bodyParams = []
+      this.headerParams = []
     },
     $_importData({ requestMethod, requestUrl, queryParams, bodyParams }) {
       // 导入数据
-      this.requestMethod = requestMethod;
-      this.requestUrl = requestUrl;
-      this.queryParams = bodyParams;
-      this.bodyParams = bodyParams;
-      this.handleChange();
-    },
+      this.requestMethod = requestMethod
+      this.requestUrl = requestUrl
+      this.queryParams = bodyParams
+      this.bodyParams = bodyParams
+      this.handleChange()
+    }
   },
   components: {
     paramCollector,
-    CurlImport,
-  },
-};
+    CurlImport
+  }
+}
 </script>
 
 <style scoped lang="less">

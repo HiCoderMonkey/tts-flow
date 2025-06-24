@@ -1,7 +1,15 @@
 import * as esprima from 'esprima'
 import * as acornWalk from 'acorn-walk'
 
-const blacklist = new Set(['eval', 'setTimeout', 'setInterval', 'fetch', 'Image', 'XMLHttpRequest', 'ActiveXObject'])
+const blacklist = new Set([
+  'eval',
+  'setTimeout',
+  'setInterval',
+  'fetch',
+  'Image',
+  'XMLHttpRequest',
+  'ActiveXObject'
+])
 
 function hasBlacklist(node) {
   if (node.type === 'Identifier') {

@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-select 
+    <el-select
       filterable
-      v-model="val" 
-      class="use-property" 
-      size="small" 
+      v-model="val"
+      class="use-property"
+      size="small"
       placeholder="请选择"
       @change="handleChange"
     >
@@ -14,8 +14,7 @@
         :label="item.label"
         size="small"
         :value="item.value"
-        >
-      </el-option>
+      />
     </el-select>
   </div>
 </template>
@@ -28,18 +27,18 @@ export default {
       type: Array,
       default: () => []
     },
-    value: Object,
+    value: Object
   },
-  data () {
+  data() {
     return {
-      val: '',
+      val: ''
     }
   },
   watch: {
     value: {
       immediate: true,
       deep: true,
-      handler (nv) {
+      handler(nv) {
         if (nv && nv.type === 'option') {
           this.val = nv.value
         }
@@ -47,17 +46,17 @@ export default {
     }
   },
   methods: {
-    handleChange(e) { 
+    handleChange(e) {
       this.val = e
-      const option = this.options.find(item => item.value === e) || {}
+      const option = this.options.find((item) => item.value === e) || {}
       const data = {
-        type: 'option',  
+        type: 'option',
         value: e,
         dataType: option.dataType,
         valueDesc: option.label
       }
       this.$emit('change', data)
-    },
+    }
   }
 }
 </script>

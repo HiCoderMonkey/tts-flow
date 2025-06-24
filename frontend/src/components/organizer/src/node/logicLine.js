@@ -46,8 +46,9 @@ class LogicPolyline extends PolylineEdge {
     const positionData = {}
     const targetInlines = graphModel.getNodeIncomingEdge(targetNodeId)
     // 如果后一个节点入口有多条线
-    if (targetInlines.length && targetInlines.length > 1) { 
-      let lastPoint = {}, lastPrePoint = {}
+    if (targetInlines.length && targetInlines.length > 1) {
+      let lastPoint = {},
+        lastPrePoint = {}
       if (pointsList.length >= 4) {
         lastPoint = pointsList[pointsList.length - 2]
         lastPrePoint = pointsList[pointsList.length - 3]
@@ -61,8 +62,8 @@ class LogicPolyline extends PolylineEdge {
       width = Math.abs(lastPoint.x - lastPrePoint.x)
       height = Math.abs(lastPoint.y - lastPrePoint.y)
       direction = ''
-      positionData.x = (lastPoint.x + lastPrePoint.x)/2 - ICON_HEIGHT / 2
-      positionData.y = (lastPoint.y + lastPrePoint.y)/2 - ICON_HEIGHT / 2
+      positionData.x = (lastPoint.x + lastPrePoint.x) / 2 - ICON_HEIGHT / 2
+      positionData.y = (lastPoint.y + lastPrePoint.y) / 2 - ICON_HEIGHT / 2
     } else {
       const lastPoint = pointsList[pointsList.length - 1]
       const lastPrePoint = pointsList[pointsList.length - 2]
@@ -101,7 +102,11 @@ class LogicPolyline extends PolylineEdge {
     }, 0)
     return h(
       'foreignObject',
-      { ...positionData, id: 'line_' + id, style: `z-index: 20; width: ${width ? width : height}px` },
+      {
+        ...positionData,
+        id: 'line_' + id,
+        style: `z-index: 20; width: ${width ? width : height}px`
+      },
       [
         h(
           'div',

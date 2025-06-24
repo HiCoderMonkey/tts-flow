@@ -2,7 +2,7 @@
   <div class="action-panel-wrapper">
     <action-item
       v-for="(item, index) in actions"
-      :title="`行为${index+1}`"
+      :title="`行为${index + 1}`"
       :key="index"
       :value="item"
       :context="context"
@@ -11,13 +11,8 @@
       @change="handleActionChange($event, index)"
       @delete="handleActionDelete(index)"
       class="action-item"
-    ></action-item>
-    <el-link 
-      type="primary" 
-      :underline="false"
-      class="add-button"
-      @click="addAction"
-    >
+    />
+    <el-link type="primary" :underline="false" class="add-button" @click="addAction">
       <i class="el-icon-circle-plus-outline"></i>
       添加行为
     </el-link>
@@ -34,20 +29,20 @@ export default {
     value: [String, Number, Boolean, Object, Array]
   },
   model: {
-    prop: "value",
-    event: "change"
+    prop: 'value',
+    event: 'change'
   },
-  data () {
+  data() {
     return {
       propName: '',
-      actions: [],
+      actions: []
     }
   },
   watch: {
     value: {
       deep: true,
       immediate: true,
-      handler (nv) {
+      handler(nv) {
         if (nv && nv.length) {
           this.actions = nv
         } else {
@@ -57,7 +52,7 @@ export default {
               keyDefine: '',
               keyType: '',
               valueDefine: '',
-              value: {},
+              value: {}
             }
           ]
         }
@@ -82,7 +77,7 @@ export default {
         keyDefine: '',
         keyType: '',
         valueDefine: '',
-        value: {},
+        value: {}
       }
       this.actions.push(tempAction)
     }

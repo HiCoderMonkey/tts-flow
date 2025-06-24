@@ -1,4 +1,4 @@
-const activeNode =  {
+const activeNode = {
   id: 'widget1',
   componentName: 'Radio',
   title: '单选框',
@@ -44,8 +44,8 @@ const activeNode =  {
     {
       name: 'onChange',
       propType: 'func',
-      description: '值改变时',
-    },
+      description: '值改变时'
+    }
   ],
   getLogic() {
     return {
@@ -101,8 +101,8 @@ export default {
           {
             name: 'onChange',
             propType: 'func',
-            description: '值改变时',
-          },
+            description: '值改变时'
+          }
         ],
         getLogic() {
           return {
@@ -139,8 +139,8 @@ export default {
           {
             name: 'onChange',
             propType: 'func',
-            description: '值改变时',
-          },
+            description: '值改变时'
+          }
         ],
         getLogic() {
           return {
@@ -153,5 +153,5 @@ export default {
         }
       }
     ]
-  },
+  }
 }

@@ -16,7 +16,7 @@ const eventNode = {
     componentId: 'Button_tk2sa3', // 事件节点对应的物料组件Id
     componentName: 'Button', // 事件节点对应的物料组件名称
     name: '按钮点击',
-    event: 'click', // 物料触发的事件、目前一个事件节点只允许绑定一个事件
+    event: 'click' // 物料触发的事件、目前一个事件节点只允许绑定一个事件
   }
 }
 ```
@@ -37,15 +37,17 @@ const reactionNode = {
     componentId: 'Input_tk2sa3', // 事件节点对应的物料组件Id
     componentName: 'Input', // 反应节点对应的物料组件名称
     name: '修改用户名',
-    reactions: [ // 组件反应列表，每一项表示一个属性的变化
+    reactions: [
+      // 组件反应列表，每一项表示一个属性的变化
       {
         key: 'value', // 需要修改组件的属性key
         keyDefine: '值',
         keyType: 'string',
-        value: { // 设置属性的具体值，详细请查看后面的value类型
+        value: {
+          // 设置属性的具体值，详细请查看后面的value类型
           type: 'option',
           value: '男',
-          dataType: 'string',
+          dataType: 'string'
         }
       }
     ]
@@ -62,14 +64,14 @@ const reactionNode = {
 ```js
 const commonNode = {
   id: '',
-  type: "CommonNode",
+  type: 'CommonNode',
   x: 100,
   y: 100,
   properties: {
     type: 'dataSource', // or pageJump
     name: '获取用户列表',
     ds: {}, // 数据源详细内容
-    pj: {}, // 页面跳转详细内容
+    pj: {} // 页面跳转详细内容
   }
 }
 ```
@@ -102,7 +104,6 @@ const edgeData = {
 }
 ```
 
-
 ## value类型
 
 **1.可选项选择**
@@ -112,10 +113,9 @@ value = {
   type: 'option',
   dataType: 'string',
   value: '男',
-  valueDesc: '隐藏',
+  valueDesc: '隐藏'
 }
 ```
-
 
 **2.手动输入**
 
@@ -123,20 +123,19 @@ value = {
 value = {
   type: 'input',
   value: '您好啊',
-  dataType: 'string',
+  dataType: 'string'
 }
 ```
-
 
 **3.页面组件的值**
 
 ```js
 value = {
   type: 'component',
-  componentId: '111', // 页面组件Id' 
+  componentId: '111', // 页面组件Id'
   componentName: '输入框',
   field: 'id', // 如果组件的值是对象，则可以通过field获取对象的属性
-  prop: 'name', // 预留: model.getProps('name') 拿属性, 现在是value，可以直接调用model的getValue方法
+  prop: 'name' // 预留: model.getProps('name') 拿属性, 现在是value，可以直接调用model的getValue方法
 }
 ```
 
@@ -147,7 +146,7 @@ value = {
   type: 'dataSource',
   nodeId: 'b5i92n8ilkg0000', // 流程图上配置的数据节点的id
   apiId: 1, // 对应的数据源请求的id
-  field: 'data.list', // 去拿该数据源返回值的哪个字段
+  field: 'data.list' // 去拿该数据源返回值的哪个字段
 }
 ```
 
@@ -156,10 +155,8 @@ value = {
 ```js
 value = {
   type: 'componentProp',
-  componentId: '111', // 页面组件Id' 
+  componentId: '111', // 页面组件Id'
   field: 'id', // 如果组件的属性值是对象，则可以通过field获取对象的字段
-  prop: 'name', // 属性值，调用model的getProps('name')获取属性值
+  prop: 'name' // 属性值，调用model的getProps('name')获取属性值
 }
 ```
-
-

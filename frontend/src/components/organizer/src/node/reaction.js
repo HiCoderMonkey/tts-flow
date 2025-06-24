@@ -3,19 +3,19 @@ import base from './base'
 class ReactionNodeView extends base.view {}
 
 class ReactionNodeModel extends base.model {
-  getNodeName () {
+  getNodeName() {
     return this.properties.name
   }
-  getNodeAbstract () {
+  getNodeAbstract() {
     const title = '节点行为'
     const content = []
     if (this.properties && this.properties.reactions && this.properties.reactions.length) {
-      this.properties.reactions.forEach(item => {
+      this.properties.reactions.forEach((item) => {
         content.push({
           desc: item.keyDefine,
           type: 'reaction'
         })
-      });
+      })
     }
     return {
       title,
@@ -23,7 +23,7 @@ class ReactionNodeModel extends base.model {
       showButton: true
     }
   }
-  getNodeLogo () {
+  getNodeLogo() {
     return this.properties && this.properties.logo
   }
 }

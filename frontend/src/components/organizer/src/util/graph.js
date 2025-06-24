@@ -4,24 +4,32 @@
  * @constructor
  */
 
- import { genId, genStartPos, genNewNodePos } from './calculate'
- import { NODE_SPACE_Y, NODE_WIDTH, NODE_HEIGHT, GRAPH_START_X, GRAPH_START_Y, EDITOR_EVENT} from './constant'
- import { getNodeName } from './node' 
- import event from '../node/event'
- import logicLine from '../node/logicLine'
- import { eventNodeMap, defaultLogo } from './typeMap'
- import Layout from './layout'
+import { genId, genStartPos, genNewNodePos } from './calculate'
+import {
+  NODE_SPACE_Y,
+  NODE_WIDTH,
+  NODE_HEIGHT,
+  GRAPH_START_X,
+  GRAPH_START_Y,
+  EDITOR_EVENT
+} from './constant'
+import { getNodeName } from './node'
+import event from '../node/event'
+import logicLine from '../node/logicLine'
+import { eventNodeMap, defaultLogo } from './typeMap'
+import Layout from './layout'
 //  import { History } from '@didi/suda-utils'
 
 class Graph {
-  constructor (options) {
+  constructor(options) {
     this.lf = options.lf
     this.context = options.context
-    this.layout = new Layout(this.lf, { // 布局
+    this.layout = new Layout(this.lf, {
+      // 布局
       rankdir: 'LR',
       align: 'UL',
       nodesep: 2,
-      ranksep: 20,
+      ranksep: 20
     })
     // this.history = new History() // 操作记录
     this.selectedNodes = []
@@ -32,44 +40,45 @@ class Graph {
   /**
    * 当选中左侧画布组件时，选中逻辑图上对应节点
    */
-  selectNodesByModel (model) {
+  selectNodesByModel(model) {
     const componentId = model.id
     const data = this.lf.getGraphData()
     const { nodes } = data
-    this.selectedNodes && this.selectedNodes.forEach(nodeModel => {
-      nodeModel.setProperties({
-        status: 'normal'
+    this.selectedNodes &&
+      this.selectedNodes.forEach((nodeModel) => {
+        nodeModel.setProperties({
+          status: 'normal'
+        })
       })
-    })
     this.selectedNodes = []
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       if (node.properties && node.properties.componentId === componentId) {
         const nodeId = node.id
         const nodeModel = this.lf.getNodeModelById(nodeId)
         nodeModel.setProperties({
           status: 'selected'
-        }) 
+        })
         this.selectedNodes.push(nodeModel)
       }
     })
   }
 
- /**
+  /**
    * 当悬浮左侧画布组件时，高亮逻辑图上响应节点
    */
-  hoverNodesByModel (model) {
+  hoverNodesByModel(model) {
     const componentId = model.id
     const data = this.lf.getGraphData()
     const { nodes } = data
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       const nodeId = node.id
       const nodeModel = this.lf.getNodeModelById(nodeId)
-      if(node.properties && node.properties.componentId === componentId) {
+      if (node.properties && node.properties.componentId === componentId) {
         nodeModel.setProperties({
           status: 'hovered'
         })
       } else {
-        if (nodeModel.properties && nodeModel.properties.status === 'selected') return;
+        if (nodeModel.properties && nodeModel.properties.status === 'selected') return
         nodeModel.setProperties({
           status: 'normal'
         })
@@ -80,14 +89,15 @@ class Graph {
   /**
    * 选中某一节点
    */
-  selectNode (seletedModel) {  
+  selectNode(seletedModel) {
     const nodeId = seletedModel.id
     const nodeModel = this.lf.getNodeModelById(nodeId)
-    this.selectedNodes && this.selectedNodes.forEach(nodeModel => {
-      nodeModel.setProperties({
-        status: 'normal'
+    this.selectedNodes &&
+      this.selectedNodes.forEach((nodeModel) => {
+        nodeModel.setProperties({
+          status: 'normal'
+        })
       })
-    })
     this.selectedNodes = []
     nodeModel.setProperties({
       status: 'selected'
@@ -99,14 +109,15 @@ class Graph {
   /**
    * hover某一节点
    */
-   hoverNode (seletedModel) {
+  hoverNode(seletedModel) {
     const nodeId = seletedModel.id
     const nodeModel = this.lf.getNodeModelById(nodeId)
-    this.hoveredNodes && this.hoveredNodes.forEach(nodeModel => {
-      nodeModel.setProperties({
-        status: 'normal'
+    this.hoveredNodes &&
+      this.hoveredNodes.forEach((nodeModel) => {
+        nodeModel.setProperties({
+          status: 'normal'
+        })
       })
-    })
     this.hoveredNodes = []
     nodeModel.setProperties({
       status: 'hovered'
@@ -115,20 +126,22 @@ class Graph {
     this.lf.graphModel.eventCenter.emit('node:model-selected', seletedModel)
   }
 
-   /**
+  /**
    * 清空所有节点状态
    */
-  clearNodesStatus () {
-    this.selectedNodes && this.selectedNodes.forEach(nodeModel => {
-      nodeModel.setProperties({
-        status: 'normal'
+  clearNodesStatus() {
+    this.selectedNodes &&
+      this.selectedNodes.forEach((nodeModel) => {
+        nodeModel.setProperties({
+          status: 'normal'
+        })
       })
-    })
-    this.hoveredNodes && this.hoveredNodes.forEach(nodeModel => {
-      nodeModel.setProperties({
-        status: 'normal'
+    this.hoveredNodes &&
+      this.hoveredNodes.forEach((nodeModel) => {
+        nodeModel.setProperties({
+          status: 'normal'
+        })
       })
-    })
     this.selectedNodes = []
     this.hoveredNodes = []
   }
@@ -136,7 +149,7 @@ class Graph {
   /**
    * 通过拖拽添加节点
    */
-  addNodeByDrop (model, e) {
+  addNodeByDrop(model, e) {
     const { clientX, clientY } = e
     const point = this.lf.graphModel.getPointByClient({ x: clientX - 5, y: clientY - 5 })
     const canvasPoint = point.canvasOverlayPosition
@@ -144,8 +157,11 @@ class Graph {
     const componentName = model.componentName
     const material = this.context.getMaterialByType(componentName)
     const logo = material.logo || defaultLogo
-    const x = Math.abs((canvasPoint.x + NODE_WIDTH/2) - GRAPH_START_X) < 50 ? GRAPH_START_X : (canvasPoint.x + NODE_WIDTH/2)
-    const y = canvasPoint.y + NODE_HEIGHT/2
+    const x =
+      Math.abs(canvasPoint.x + NODE_WIDTH / 2 - GRAPH_START_X) < 50
+        ? GRAPH_START_X
+        : canvasPoint.x + NODE_WIDTH / 2
+    const y = canvasPoint.y + NODE_HEIGHT / 2
     const nodeData = {
       id,
       type: event.type,
@@ -165,30 +181,34 @@ class Graph {
     this.selectNode(node) // 添加后默认选中该节点
     this.addHistory()
   }
-  
+
   /**
    * 在节点或边后新插入新节点
    */
-  insertNode (nodeModel, type, properties) {
+  insertNode(nodeModel, type, properties) {
     // todo: 几种情况的处理：1.一个节点连出多条边 2.一个节点的入口连入多条边 3.线的回连
     const lf = this.lf
-    if (nodeModel.data.type === logicLine.type) { // 如果是基于边插入节点，则在此边之后新增节点
+    if (nodeModel.data.type === logicLine.type) {
+      // 如果是基于边插入节点，则在此边之后新增节点
       const edge = nodeModel
       const id = genId(10)
-      const node = lf.addNode({ // 在此边的尾端插入一个新节点
+      const node = lf.addNode({
+        // 在此边的尾端插入一个新节点
         id,
         type,
         x: edge.endPoint.x + NODE_WIDTH / 2, // 75为节点宽度
         y: edge.endPoint.y,
         properties
       })
-      const targetNodeId =  edge.data.targetNodeId // 原来此边之后的节点id
-      const preEdge = { // 基于此边新建一条边，代替此边，连接新节点
+      const targetNodeId = edge.data.targetNodeId // 原来此边之后的节点id
+      const preEdge = {
+        // 基于此边新建一条边，代替此边，连接新节点
         ...edge.data,
         targetNodeId: id,
         type: logicLine.type
       }
-      const nextEdge = { // 新建一条边，连接新节点与原来此边之后的节点
+      const nextEdge = {
+        // 新建一条边，连接新节点与原来此边之后的节点
         id: genId(10),
         sourceNodeId: id,
         targetNodeId: targetNodeId,
@@ -201,17 +221,20 @@ class Graph {
       lf.addEdge(nextEdge)
       this.layout.layout(node)
       this.selectNode(node) // 添加后默认选中该节点
-    } else { // 如果是基于node插入节点，则在此node之后新增一个节点
+    } else {
+      // 如果是基于node插入节点，则在此node之后新增一个节点
       const id = genId(10)
       const pos = genNewNodePos(lf, nodeModel)
-      const node = lf.addNode({ // 在此边的尾端插入一个新节点
+      const node = lf.addNode({
+        // 在此边的尾端插入一个新节点
         id,
         type,
         x: pos.x, // 75为节点宽度
         y: pos.y,
         properties
       })
-      lf.addEdge({ // 在此边的尾端插入一个新节点
+      lf.addEdge({
+        // 在此边的尾端插入一个新节点
         id: genId(10),
         sourceNodeId: nodeModel.id,
         targetNodeId: id,
@@ -226,11 +249,12 @@ class Graph {
   /**
    * 删除选中的节点并自动连接前后节点
    */
-   deleteNode (nodeModel) {
+  deleteNode(nodeModel) {
     const incommingEdges = this.lf.getNodeIncomingEdge(nodeModel.id)
     const outgoingNodes = this.lf.getNodeOutgoingNode(nodeModel.id)
     const incomingNodes = this.lf.getNodeIncomingNode(nodeModel.id)
-    if (outgoingNodes.length && incommingEdges.length) { // 如果有后续节点并且非循环节点
+    if (outgoingNodes.length && incommingEdges.length) {
+      // 如果有后续节点并且非循环节点
       const edge = incommingEdges[0]
       const node = outgoingNodes[0]
       let newEdge = {
@@ -239,7 +263,7 @@ class Graph {
       }
       this.lf.deleteEdge(edge)
       this.addEdge(newEdge)
-    } 
+    }
     this.lf.deleteNode(nodeModel.id)
     if (incomingNodes.length) {
       this.layout.layout(incomingNodes[0])
@@ -252,9 +276,10 @@ class Graph {
   /**
    * 复制选中的节点并放于该节点下方
    */
-  copyNode (nodeModel) {
-    const { data }= nodeModel
-    let x = 0, y = 0
+  copyNode(nodeModel) {
+    const { data } = nodeModel
+    let x = 0,
+      y = 0
     if (nodeModel.type === event.type) {
       let pos = genStartPos(this.lf)
       x = pos.x
@@ -273,11 +298,11 @@ class Graph {
     this.selectNode(node) // 添加后默认选中该节点
     this.addHistory()
   }
-  
+
   /**
    * 添加边
    */
-  addEdge (edgeData) {
+  addEdge(edgeData) {
     this.lf.addEdge(this.calcPointsList(edgeData))
   }
 
@@ -286,7 +311,8 @@ class Graph {
    */
   connectToNode(id, model) {
     const targetModel = this.lf.graphModel.getNodeModelById(id)
-    this.lf.addEdge({ // 在此边的尾端插入一个新节点
+    this.lf.addEdge({
+      // 在此边的尾端插入一个新节点
       id: genId(10),
       sourceNodeId: model.id,
       targetNodeId: id,
@@ -295,11 +321,11 @@ class Graph {
     this.layout.layout(model)
     this.addHistory()
   }
-  
+
   /**
    * 计算控制点
    */
-  calcPointsList (edgeData) {
+  calcPointsList(edgeData) {
     const lf = this.lf
     if (!edgeData.pointsList || edgeData.pointsList.length === 0) {
       const startNode = lf.getNodeModelById(edgeData.sourceNodeId)
@@ -328,11 +354,11 @@ class Graph {
     }
     return edgeData
   }
-  
+
   /**
    * 某节点后插入新节点时，移动后续所有节点位置
    */
-  shiftNextNodes (nodeModel, dx) {
+  shiftNextNodes(nodeModel, dx) {
     // todo: 考虑线的回连情况
     const lf = this.lf
     nodeModel.x = nodeModel.x + dx
@@ -352,11 +378,11 @@ class Graph {
       })
     }
   }
-  
+
   /**
    * 判断是否为循环节点
    */
-  isLoopNode (nodeModel, nodeId) {
+  isLoopNode(nodeModel, nodeId) {
     const outgoingNodes = this.lf.getNodeOutgoingNode(nodeModel.id)
     if (outgoingNodes.length) {
       for (let i = 0; i < outgoingNodes.length; i++) {
@@ -366,7 +392,7 @@ class Graph {
         }
         return this.isLoopNode(model, nodeId)
       }
-    } 
+    }
     return false
   }
 
@@ -392,9 +418,12 @@ class Graph {
   }
 
   initView() {
-    const { nodes} = this.lf.getGraphData()
+    const { nodes } = this.lf.getGraphData()
     const rect = this.layout.getNodesRect(nodes)
-    this.lf.graphModel.transformModel.translate(-rect.minX + GRAPH_START_X, -rect.minY + GRAPH_START_Y)
+    this.lf.graphModel.transformModel.translate(
+      -rect.minX + GRAPH_START_X,
+      -rect.minY + GRAPH_START_Y
+    )
   }
 
   /**

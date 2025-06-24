@@ -15,7 +15,7 @@
           :types="keyTypes"
           :value="condition.key"
           @change="handleKeyChange"
-        ></value-collector>
+        />
       </el-col>
       <el-col :span="4">
         <el-select
@@ -25,8 +25,12 @@
           placeholder="请选择"
           @change="handleOperatorChange"
         >
-          <el-option v-for="(item, index) in comparisonOperators" :key="index" :label="item.value" :value="item.value">
-          </el-option>
+          <el-option
+            v-for="(item, index) in comparisonOperators"
+            :key="index"
+            :label="item.value"
+            :value="item.value"
+          />
         </el-select>
       </el-col>
       <el-col :span="10">
@@ -37,7 +41,7 @@
           :types="valueTypes"
           :value="condition.value"
           @change="handleValueChange"
-        ></value-collector>
+        />
       </el-col>
     </el-row>
   </div>
@@ -65,8 +69,24 @@ export default {
       condition: {},
       val: {},
       valueOptions: [],
-      keyTypes: ['component', 'componentProp', 'dataSource', 'dataConvert', 'urlParam', 'initParam'],
-      valueTypes: ['option', 'input', 'component', 'componentProp', 'dataSource', 'dataConvert', 'urlParam', 'initParam']
+      keyTypes: [
+        'component',
+        'componentProp',
+        'dataSource',
+        'dataConvert',
+        'urlParam',
+        'initParam'
+      ],
+      valueTypes: [
+        'option',
+        'input',
+        'component',
+        'componentProp',
+        'dataSource',
+        'dataConvert',
+        'urlParam',
+        'initParam'
+      ]
     }
   },
   watch: {

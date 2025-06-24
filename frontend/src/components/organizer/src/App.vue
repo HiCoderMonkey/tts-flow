@@ -2,11 +2,7 @@
   <div id="app">
     <div class="organizer-panel-wrapper">
       <el-container class="organizer-container">
-        <logic-panel
-          class="logic-panel-wrapper"
-          :context="context"
-          :info="info"
-        ></logic-panel>
+        <logic-panel class="logic-panel-wrapper" :context="context" :info="info" />
       </el-container>
     </div>
   </div>
@@ -15,25 +11,24 @@
 <script>
 import './index.less'
 import Context from './context'
-import mockDetail from './mock/mockLogicList';
-import LogicPanel from "./components/LogicPanel.vue";
-
+import mockDetail from './mock/mockLogicList'
+import LogicPanel from './components/LogicPanel.vue'
 
 export default {
-  name: "LogicSetter",
+  name: 'LogicSetter',
   data() {
     return {
       context: new Context({ logicList: [] }),
       // context: new Context(mockDetail),
-      info: undefined,
-    };
+      info: undefined
+    }
   },
   components: { LogicPanel }
-};
+}
 </script>
 
 <style>
-@import "./assets/base.css";
+@import './assets/base.css';
 
 #app {
   width: 100vw;

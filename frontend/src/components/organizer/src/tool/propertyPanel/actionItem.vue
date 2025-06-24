@@ -10,8 +10,20 @@
     <el-row>
       <el-col :span="10">
         <div class="action-label">属性:</div>
-        <el-select :value="propName" class="use-property" size="small" placeholder="请选择属性" @change="handlePropChange">
-          <el-option v-for="item in propOptions" :key="item.value" :label="item.label" size="small" :value="item.value"> </el-option>
+        <el-select
+          :value="propName"
+          class="use-property"
+          size="small"
+          placeholder="请选择属性"
+          @change="handlePropChange"
+        >
+          <el-option
+            v-for="item in propOptions"
+            :key="item.value"
+            :label="item.label"
+            size="small"
+            :value="item.value"
+          />
         </el-select>
       </el-col>
       <el-col :span="14">
@@ -24,7 +36,7 @@
           :lf="lf"
           :types="types"
           @change="handleValueChange"
-        ></value-collector>
+        />
       </el-col>
       <!-- <el-col :span="2" class="delete-button">
         <i 
@@ -98,8 +110,25 @@ export default {
     // 值的可能类型：内置选项，用户输入，页面组件值，数据源的值
     types() {
       return this.valueOptions.length
-        ? ['option', 'input', 'component', 'componentProp', 'dataSource', 'dataConvert', 'urlParam', 'initParam']
-        : ['input', 'component', 'componentProp', 'dataSource', 'dataConvert', 'urlParam', 'initParam']
+        ? [
+            'option',
+            'input',
+            'component',
+            'componentProp',
+            'dataSource',
+            'dataConvert',
+            'urlParam',
+            'initParam'
+          ]
+        : [
+            'input',
+            'component',
+            'componentProp',
+            'dataSource',
+            'dataConvert',
+            'urlParam',
+            'initParam'
+          ]
     },
     currentProp() {
       const logic = this.current.getLogic()

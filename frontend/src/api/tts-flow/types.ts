@@ -14,4 +14,4 @@ export interface TTSFlowCreate {
 export interface TTSFlowUpdate {
   name?: string
   flow_config?: any
-} 
+}

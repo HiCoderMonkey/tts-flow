@@ -10,65 +10,35 @@
     width="100%"
     :size="500"
     @closeDrawer="closeDrawer"
-    :visible.sync="showDrawer"
+    v-model:visible="showDrawer"
   >
     <div v-if="panelType !== 'condition'">
       <div class="setter-title">设置名称</div>
-      <name-setter v-model="name" @change="handelNameChange"> </name-setter>
+      <name-setter v-model="name" @change="handelNameChange" />
     </div>
     <div v-if="panelType === 'action'">
       <div class="setter-title">设置行为</div>
-      <action-setter
-        v-model="actions"
-        :context="context"
-        :current="currentModel"
-        :lf="lf"
-      />
+      <action-setter v-model="actions" :context="context" :current="currentModel" :lf="lf" />
     </div>
     <div v-if="panelType === 'condition'">
       <div class="setter-title">设置条件</div>
-      <condition-setter
-        v-model="condition"
-        :context="context"
-        ref="edgeProperties"
-        :lf="lf"
-      />
+      <condition-setter v-model="condition" :context="context" ref="edgeProperties" :lf="lf" />
     </div>
     <div v-if="panelType === 'event'">
       <div class="setter-title">设置事件</div>
-      <event-setter
-        v-model="event"
-        :context="context"
-        :current="currentModel"
-        :lf="lf"
-      />
+      <event-setter v-model="event" :context="context" :current="currentModel" :lf="lf" />
     </div>
     <div v-if="panelType === 'ds'">
       <div class="setter-title">设置请求</div>
-      <ds-setter
-        v-model="ds"
-        :context="context"
-        :current="currentModel"
-        :lf="lf"
-      />
+      <ds-setter v-model="ds" :context="context" :current="currentModel" :lf="lf" />
     </div>
     <div v-if="panelType === 'pageJump'">
       <div class="setter-title">设置跳转</div>
-      <page-jump-setter
-        v-model="pageJump"
-        :lf="lf"
-        :context="context"
-        :current="currentModel"
-      />
+      <page-jump-setter v-model="pageJump" :lf="lf" :context="context" :current="currentModel" />
     </div>
     <div v-if="panelType === 'dc'">
       <div class="setter-title">数据转换</div>
-      <dc-setter
-        v-model="dc"
-        :lf="lf"
-        :context="context"
-        :current="currentModel"
-      />
+      <dc-setter v-model="dc" :lf="lf" :context="context" :current="currentModel" />
     </div>
     <!-- <el-button
       type="primary"
@@ -84,24 +54,24 @@
 </template>
 
 <script>
-import { map, filter } from "lodash-es";
-import { validateCode } from "../../util/validate";
-import actionSetter from "./actionSetter.vue";
-import conditionSetter from "./conditionSetter.vue";
-import eventSetter from "./eventSetter.vue";
-import dsSetter from "./dsSetter.vue"; // DataSource
-import nameSetter from "./nameSetter.vue";
-import pageJumpSetter from "./pageJumpSetter.vue";
-import dcSetter from "./dcSetter.vue"; // DataConvert
+import { map, filter } from 'lodash-es'
+import { validateCode } from '../../util/validate'
+import actionSetter from './actionSetter.vue'
+import conditionSetter from './conditionSetter.vue'
+import eventSetter from './eventSetter.vue'
+import dsSetter from './dsSetter.vue' // DataSource
+import nameSetter from './nameSetter.vue'
+import pageJumpSetter from './pageJumpSetter.vue'
+import dcSetter from './dcSetter.vue' // DataConvert
 
 export default {
   props: {
     lf: Object,
-    context: Object,
+    context: Object
   },
   data() {
     return {
-      panelType: "",
+      panelType: '',
       showDrawer: false,
       currentModel: {},
       currentNode: {},
@@ -112,114 +82,111 @@ export default {
       ds: {}, // DataSource
       pageJump: {},
       dc: {}, // DataConvert
-      name: "",
-    };
+      name: ''
+    }
   },
   mounted() {
-    this.lf.on("node:click", ({ data }) => {
-      console.log("data", data);
-    });
-    this.lf.on("blank:click", () => {
-      this.showDrawer = false;
-      this.panelType = "";
-      this.currentEdge = null;
-    });
+    this.lf.on('node:click', ({ data }) => {
+      console.log('data', data)
+    })
+    this.lf.on('blank:click', () => {
+      this.showDrawer = false
+      this.panelType = ''
+      this.currentEdge = null
+    })
     // 点击边处理
-    this.lf.on("edge:option-click", (model) => {
-      this.currentEdge = model;
-      const properties = model.getProperties();
-      this.condition = properties.condition || {};
-      this.showDrawer = true;
-      this.panelType = "condition";
-    });
+    this.lf.on('edge:option-click', (model) => {
+      this.currentEdge = model
+      const properties = model.getProperties()
+      this.condition = properties.condition || {}
+      this.showDrawer = true
+      this.panelType = 'condition'
+    })
     // 点击节点处理
-    this.lf.on("node:select-click", (model) => {
-      console.log("model ===>>>", model);
-      this.currentNode = model;
-      const properties = model.getProperties();
-      this.name = properties.name;
+    this.lf.on('node:select-click', (model) => {
+      console.log('model ===>>>', model)
+      this.currentNode = model
+      const properties = model.getProperties()
+      this.name = properties.name
       switch (model.type) {
-        case "event-node":
-          this.event = (properties && properties.event) || {};
-          this.panelType = "event";
-          if (
-            model.properties &&
-            model.properties.componentName !== "pageInit"
-          ) {
-            this.showDrawer = true;
+        case 'event-node':
+          this.event = (properties && properties.event) || {}
+          this.panelType = 'event'
+          if (model.properties && model.properties.componentName !== 'pageInit') {
+            this.showDrawer = true
           }
-          break;
-        case "reaction-node":
-          this.actions = (properties && properties.reactions) || [];
-          this.panelType = "action";
-          this.showDrawer = true;
-          break;
-        case "common-node":
-          if (properties && properties.componentName === "dataSource") {
+          break
+        case 'reaction-node':
+          this.actions = (properties && properties.reactions) || []
+          this.panelType = 'action'
+          this.showDrawer = true
+          break
+        case 'common-node':
+          if (properties && properties.componentName === 'dataSource') {
             // 打开数据源设置器
-            this.ds = (properties && properties.ds) || {};
-            this.panelType = "ds";
-            this.showDrawer = true;
-          } else if (properties && properties.componentName === "pageJump") {
+            this.ds = (properties && properties.ds) || {}
+            this.panelType = 'ds'
+            this.showDrawer = true
+          } else if (properties && properties.componentName === 'pageJump') {
             // 打开页面跳转设置器
-            this.pageJump = (properties && properties.pageJump) || {};
-            this.panelType = "pageJump";
-            this.showDrawer = true;
-          } else if (properties && properties.componentName === "dataConvert") {
+            this.pageJump = (properties && properties.pageJump) || {}
+            this.panelType = 'pageJump'
+            this.showDrawer = true
+          } else if (properties && properties.componentName === 'dataConvert') {
             // 打开数据转换设置器
-            this.dc = (properties && properties.dc) || {};
-            this.panelType = "dc";
-            this.showDrawer = true;
+            this.dc = (properties && properties.dc) || {}
+            this.panelType = 'dc'
+            this.showDrawer = true
           }
-          break;
+          break
       }
-    });
+    })
   },
   methods: {
     handleChange(data, type) {
-      this[type] = data;
+      this[type] = data
     },
     handelNameChange(val) {
-      this.name = val;
+      this.name = val
     },
     handleSubmit() {
-      const currentNode = this.currentNode;
+      const currentNode = this.currentNode
       this.lf.setProperties(currentNode.id, {
-        name: this.name,
-      });
-      console.log("this.panelType ...???", this.panelType);
+        name: this.name
+      })
+      console.log('this.panelType ...???', this.panelType)
       switch (this.panelType) {
-        case "action":
+        case 'action':
           this.lf.setProperties(currentNode.id, {
-            reactions: this.actions,
-          });
-          break;
-        case "condition":
+            reactions: this.actions
+          })
+          break
+        case 'condition':
           if (this.currentEdge) {
             this.lf.setProperties(this.currentEdge.id, {
-              condition: this.condition,
-            });
+              condition: this.condition
+            })
           }
-          break;
-        case "event":
+          break
+        case 'event':
           this.lf.setProperties(currentNode.id, {
-            event: this.event,
-          });
-          break;
-        case "ds": // DataSource
+            event: this.event
+          })
+          break
+        case 'ds': // DataSource
           this.lf.setProperties(currentNode.id, {
-            ds: this.ds,
-          });
-          break;
-        case "pageJump":
+            ds: this.ds
+          })
+          break
+        case 'pageJump':
           this.lf.setProperties(currentNode.id, {
-            pageJump: this.pageJump,
-          });
-          break;
-        case "dc": {
+            pageJump: this.pageJump
+          })
+          break
+        case 'dc': {
           // DataConvert
           // DONE1: 做请求数据的必填校验（?），是否需要
-          const { convertList = [], convertCode } = this.dc;
+          const { convertList = [], convertCode } = this.dc
           // DONE2: 做输入代码段校验，并提示
           // 1. 校验js语法是否正确
           // 2. 检测代码中是否有动态插入的 script 标签
@@ -227,8 +194,8 @@ export default {
           // 4. HTTP 请求是否应该屏蔽
 
           if (!convertCode) {
-            this.$message.error("数据转换函数不能为空");
-            return false;
+            this.$message.error('数据转换函数不能为空')
+            return false
           }
 
           // 生成预期的函数体，用如下方法包裹用户输入的函数体。
@@ -237,37 +204,37 @@ export default {
             const keyList = filter(
               map(convertList, (item) => item.key),
               (key) => key
-            );
-            const funcParams = keyList.join(", ");
+            )
+            const funcParams = keyList.join(', ')
             const fullFunc = `function main(${funcParams}) {
               ${convertCode}
-            }`;
+            }`
 
-            const valid = validateCode(fullFunc);
+            const valid = validateCode(fullFunc)
             if (!valid) {
-              throw new Error("代码校验未通过，请确认代码是否合规");
+              throw new Error('代码校验未通过，请确认代码是否合规')
             }
           } catch (error) {
-            console.error("ops, something error --->>>", error);
-            this.$message.error(error?.message);
-            return;
+            console.error('ops, something error --->>>', error)
+            this.$message.error(error?.message)
+            return
           }
 
           this.lf.setProperties(currentNode.id, {
-            dc: this.dc,
-          });
-          break;
+            dc: this.dc
+          })
+          break
         }
       }
-      this.showDrawer = false;
-      this.$emit("submit", this.panelType);
+      this.showDrawer = false
+      this.$emit('submit', this.panelType)
     },
     handleCancel() {
-      this.showDrawer = false;
+      this.showDrawer = false
     },
     closeDrawer() {
-      this.currentEdge = null;
-    },
+      this.currentEdge = null
+    }
   },
   components: {
     conditionSetter,
@@ -276,9 +243,9 @@ export default {
     dsSetter,
     nameSetter,
     pageJumpSetter,
-    dcSetter,
-  },
-};
+    dcSetter
+  }
+}
 </script>
 
 <style scoped lang="less">

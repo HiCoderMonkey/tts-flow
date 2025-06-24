@@ -94,8 +94,7 @@ export default {
       }, 50)
     },
     // 鼠标悬浮时高亮画布对应组件
-    handleCompEnter(e) {
-    },
+    handleCompEnter(e) {},
     // 鼠标悬浮节点时时高亮画布对应组件
     handleNodeEnter(e) {
       const nodeModel = this.lf.getNodeModelById(e)

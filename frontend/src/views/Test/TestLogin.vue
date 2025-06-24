@@ -1,7 +1,7 @@
 <template>
   <div class="test-login">
     <h2>登录测试页面</h2>
-    
+
     <div class="test-section">
       <h3>1. 测试登录接口</h3>
       <el-form :model="loginForm" label-width="100px">
@@ -12,9 +12,7 @@
           <el-input v-model="loginForm.password" type="password" placeholder="请输入密码" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="testLogin" :loading="loading">
-            测试登录
-          </el-button>
+          <el-button type="primary" @click="testLogin" :loading="loading"> 测试登录 </el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -165,4 +163,4 @@ checkToken()
   white-space: pre-wrap;
   word-wrap: break-word;
 }
-</style> 
+</style>

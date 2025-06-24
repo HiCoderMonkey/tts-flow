@@ -10,7 +10,7 @@
           placeholder="请输入"
           size="small"
           @change="handleResourceKeyChange($event, idx)"
-        ></el-input>
+        />
         <div class="dc-label"><span>=</span>VALUE:</div>
         <value-collector
           class="value-select"
@@ -19,18 +19,31 @@
           :types="types"
           :lf="lf"
           @change="handleResourceValueChange($event, idx)"
-        ></value-collector>
+        />
 
-        <el-link class="delete-button" type="danger" icon="el-icon-delete" @click="deleteParam(idx)"></el-link>
+        <el-link
+          class="delete-button"
+          type="danger"
+          icon="el-icon-delete"
+          @click="deleteParam(idx)"
+        />
       </div>
-      <el-link type="primary" class="add-button" icon="el-icon-circle-plus-outline" @click="addParam">
+      <el-link
+        type="primary"
+        class="add-button"
+        icon="el-icon-circle-plus-outline"
+        @click="addParam"
+      >
         添加变量
       </el-link>
     </div>
 
     <div class="item-wrap">
       <div class="dc-label">转换函数体：</div>
-      <el-alert title="如上配置的转换源数据 key 可直接作为变量名在下面函数体中使用" type="warning"> </el-alert>
+      <el-alert
+        title="如上配置的转换源数据 key 可直接作为变量名在下面函数体中使用"
+        type="warning"
+      />
       <div id="my-editor"></div>
     </div>
   </div>

@@ -2,7 +2,7 @@
   <div class="setter-wrapper">
     <condition-item
       v-for="(item, index) in conditions"
-      :title="`条件${index+1}（C${index+1}）`"
+      :title="`条件${index + 1}（C${index + 1}）`"
       :key="index"
       :value="item"
       :context="context"
@@ -11,30 +11,29 @@
       @change="handleConditionChange($event, index)"
       @delete="handleConditionDelete(index)"
       class="setter-item"
-    ></condition-item>
-    <el-link 
-      type="primary" 
-      :underline="false"
-      class="add-button"
-      @click="addCondition"
-    >
+    />
+    <el-link type="primary" :underline="false" class="add-button" @click="addCondition">
       <i class="el-icon-circle-plus-outline"></i>
       添加条件
     </el-link>
     <el-row class="setter-footer">
-      <el-radio-group v-model="combineType" size="small" v-if="conditions.length" @change="handleCombineTypeChange">
+      <el-radio-group
+        v-model="combineType"
+        size="small"
+        v-if="conditions.length"
+        @change="handleCombineTypeChange"
+      >
         <el-radio :label="1" size="small">满足所有条件</el-radio>
         <el-radio :label="2">满足任意条件</el-radio>
         <el-radio :label="3">自定义</el-radio>
-        <el-input 
+        <el-input
           class="input"
-          v-model="combineRule" 
-          placeholder="例如：C1&&(C2||C3)" 
+          v-model="combineRule"
+          placeholder="例如：C1&&(C2||C3)"
           size="small"
-          :disabled="combineType!==3"
+          :disabled="combineType !== 3"
           @change="handleCombineTypeChange"
-        >
-        </el-input>
+        />
       </el-radio-group>
     </el-row>
   </div>
@@ -50,21 +49,21 @@ export default {
     value: [String, Number, Boolean, Object, Array]
   },
   model: {
-    prop: "value",
-    event: "change"
+    prop: 'value',
+    event: 'change'
   },
-  data () {
+  data() {
     return {
       combineType: 1,
       combineRule: '',
-      conditions: [],
+      conditions: []
     }
   },
   watch: {
     value: {
       deep: true,
       immediate: true,
-      handler (nv) {
+      handler(nv) {
         if (nv && nv.conditions && nv.conditions.length) {
           this.conditions = nv.conditions || []
           this.combineRule = nv.combineRule || ''
@@ -79,7 +78,7 @@ export default {
     },
     combineType: {
       immediate: true,
-      handler (nv) {
+      handler(nv) {
         this.handleCombineType()
       }
     }
@@ -90,7 +89,7 @@ export default {
       this.$emit('change', {
         combineRule: this.combineRule,
         conditions: this.conditions,
-        combineType: this.combineType,
+        combineType: this.combineType
       })
     },
     handleConditionDelete(index) {
@@ -98,7 +97,7 @@ export default {
       this.$emit('change', {
         combineRule: this.combineRule,
         conditions: this.conditions,
-        combineType: this.combineType,
+        combineType: this.combineType
       })
       this.handleCombineType()
     },
@@ -107,20 +106,24 @@ export default {
       this.$emit('change', {
         combineRule: this.combineRule,
         conditions: this.conditions,
-        combineType: this.combineType,
+        combineType: this.combineType
       })
     },
     handleCombineType() {
       switch (this.combineType) {
-        case 1: 
-          this.combineRule = this.conditions.map((item, index)=> {
-            return `C${index+1}`
-          }).join('&&')
+        case 1:
+          this.combineRule = this.conditions
+            .map((item, index) => {
+              return `C${index + 1}`
+            })
+            .join('&&')
           break
-        case 2: 
-          this.combineRule = this.conditions.map((item, index)=> {
-            return `C${index+1}`
-          }).join('||')
+        case 2:
+          this.combineRule = this.conditions
+            .map((item, index) => {
+              return `C${index + 1}`
+            })
+            .join('||')
           break
       }
     },
@@ -166,7 +169,7 @@ export default {
   padding-left: 4px;
 }
 /deep/.el-radio {
-  &:not(:last-of-type){
+  &:not(:last-of-type) {
     margin-right: 20px;
   }
   margin-right: 4px;

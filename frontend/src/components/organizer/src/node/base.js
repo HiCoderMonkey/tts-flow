@@ -1,5 +1,7 @@
-
-import { HtmlNode, HtmlNodeModel, h } from '@logicflow/core'
+import { createApp, h } from 'vue'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+import { HtmlNode, HtmlNodeModel } from '@logicflow/core'
 import { NODE_WIDTH, NODE_HEIGHT } from '../util/constant'
 import baseNode from './baseNode.vue'
 
@@ -25,23 +27,21 @@ class BaseNodeView extends HtmlNode {
   setHtml(rootEl) {
     rootEl.appendChild(this.root)
     if (this.vm) {
-      this.vm.$mount(this.root)
-    } else {
-      this.vm = new Vue({
-        render: (h) =>
-          h(this.vueComponent, {
-            props: {
-              model: this.props.model,
-              graphModel: this.props.graphModel,
-              disabled: this.props.graphModel.editConfigModel.isSilentMode,
-              isSelected: this.props.model.isSelected,
-              isHovered: this.props.model.isHovered,
-              properties: this.props.model.getProperties()
-            }
-          })
-      })
-      this.vm.$mount(this.root)
+      this.vm.unmount()
     }
+    this.vm = createApp({
+      render: () =>
+        h(this.vueComponent, {
+          model: this.props.model,
+          graphModel: this.props.graphModel,
+          disabled: this.props.graphModel.editConfigModel.isSilentMode,
+          isSelected: this.props.model.isSelected,
+          isHovered: this.props.model.isHovered,
+          properties: this.props.model.getProperties()
+        })
+    })
+    this.vm.use(ElementPlus)
+    this.vm.mount(this.root)
   }
   getAnchorShape(anchorData) {
     const { x, y, type } = anchorData

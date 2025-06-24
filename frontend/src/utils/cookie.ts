@@ -62,4 +62,4 @@ export function getAccessToken(): string | null {
  */
 export function removeAccessToken(): void {
   deleteCookie(TOKEN_KEY)
-} 
+}

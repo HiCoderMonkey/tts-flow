@@ -1,31 +1,69 @@
 <template>
   <div class="value-selector-wrapper">
     <!-- <i class="el-icon-setting value-selector-icon"></i> -->
-    <el-dropdown trigger="click" size="small" class="type-dropdown" placement="top" @command="handleCommand">
+    <el-dropdown
+      trigger="click"
+      size="small"
+      class="type-dropdown"
+      placement="top"
+      @command="handleCommand"
+    >
       <span class="value-selector-prefix">
-        <i class="value-selector-icon" :class="['value-selector-icon', typeMap[type] && typeMap[type].icon]"></i>
+        <i
+          class="value-selector-icon"
+          :class="['value-selector-icon', typeMap[type] && typeMap[type].icon]"
+        ></i>
       </span>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item
-          v-for="item in typeOptions"
-          :key="item.value"
-          :command="item.value"
-          :icon="item.icon"
-          :class="item.value === type && 'selected'"
-        >
-          {{ item.label }}
-        </el-dropdown-item>
-      </el-dropdown-menu>
+      <template v-slot:dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item
+            v-for="item in typeOptions"
+            :key="item.value"
+            :command="item.value"
+            :icon="item.icon"
+            :class="item.value === type && 'selected'"
+          >
+            {{ item.label }}
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
     </el-dropdown>
     <div class="value-selector">
-      <option-value v-show="type === 'option'" :value="val" @change="handleChange" :options="options"></option-value>
-      <input-value v-show="type === 'input'" :value="val" @change="handleChange"></input-value>
-      <component-value v-show="type === 'component'" :value="val" :context="context" @change="handleChange"></component-value>
-      <component-prop-value v-show="type === 'componentProp'" :value="val" :context="context" @change="handleChange"></component-prop-value>
-      <data-source-value v-show="type === 'dataSource'" :value="val" :context="context" :lf="lf" @change="handleChange"></data-source-value>
-      <data-convert-value v-show="type === 'dataConvert'" :value="val" :context="context" :lf="lf" @change="handleChange"></data-convert-value>
-      <url-param-value v-show="type === 'urlParam'" :value="val" @change="handleChange"></url-param-value>
-      <init-param-value v-show="type === 'initParam'" :value="val" @change="handleChange"></init-param-value>
+      <option-value
+        v-show="type === 'option'"
+        :value="val"
+        @change="handleChange"
+        :options="options"
+      />
+      <input-value v-show="type === 'input'" :value="val" @change="handleChange" />
+      <component-value
+        v-show="type === 'component'"
+        :value="val"
+        :context="context"
+        @change="handleChange"
+      />
+      <component-prop-value
+        v-show="type === 'componentProp'"
+        :value="val"
+        :context="context"
+        @change="handleChange"
+      />
+      <data-source-value
+        v-show="type === 'dataSource'"
+        :value="val"
+        :context="context"
+        :lf="lf"
+        @change="handleChange"
+      />
+      <data-convert-value
+        v-show="type === 'dataConvert'"
+        :value="val"
+        :context="context"
+        :lf="lf"
+        @change="handleChange"
+      />
+      <url-param-value v-show="type === 'urlParam'" :value="val" @change="handleChange" />
+      <init-param-value v-show="type === 'initParam'" :value="val" @change="handleChange" />
     </div>
   </div>
 </template>

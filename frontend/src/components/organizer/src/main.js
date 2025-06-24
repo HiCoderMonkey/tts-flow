@@ -7,7 +7,7 @@ import App from './App.vue'
 
 Vue.use(VueCompositionAPI)
 Vue.use(ElementUI)
-window.Vue = Vue;
+window.Vue = Vue
 
 const app = new Vue({
   render: (h) => h(App)

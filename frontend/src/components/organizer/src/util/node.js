@@ -1,7 +1,7 @@
 /**
  * 根据组件model生成节点名
  */
-export const getNodeName = ( model ) => {
+export const getNodeName = (model) => {
   return model.getModelName() || model.name || model.componentName
 }
 

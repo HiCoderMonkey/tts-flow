@@ -1,7 +1,19 @@
 <template>
   <div>
-    <el-select v-model="nodeId" size="small" placeholder="请选择数据节点" filterable @change="handleChange">
-      <el-option v-for="item in options" :key="item.value" :label="item.label" size="small" :value="item.value">
+    <el-select
+      v-model="nodeId"
+      size="small"
+      placeholder="请选择数据节点"
+      filterable
+      @change="handleChange"
+    >
+      <el-option
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        size="small"
+        :value="item.value"
+      >
         <span style="float: left" @mouseenter.stop="handleMouseEnter(item.value)">
           {{ item.label }}
         </span>
@@ -14,7 +26,7 @@
         :body="resBody"
         :value="field"
         @change="handleFiledChange"
-      ></field-selector>
+      />
       <div class="custom-field" v-else>
         <el-input
           class="custom-input"
@@ -22,7 +34,7 @@
           v-model="field"
           placeholder="支持以.分割的多级属性"
           @change="handleCustomField"
-        ></el-input>
+        />
         <!-- <el-select v-model="dataType" size="small" placeholder="请选择数据类型" filterable>
           <el-option v-for="item in TypeOptions" :key="item.value" :label="item.label" size="small" :value="item.value">
             <span style="float: left">
@@ -69,8 +81,7 @@ export default {
     apiId: {
       immediate: true,
       deep: true,
-      async handler(nv) {
-      }
+      async handler(nv) {}
     }
   },
   methods: {
@@ -134,12 +145,17 @@ export default {
     options() {
       const data = this.lf.getGraphData()
       const { nodes } = data
-      const dsNodes = nodes.filter((item) => item.properties.componentName === 'dataSource' && item.properties.ds)
+      const dsNodes = nodes.filter(
+        (item) => item.properties.componentName === 'dataSource' && item.properties.ds
+      )
       const options = dsNodes.map((item) => {
         return {
           label: `${item.properties.name}_${item.properties.ds.name}`,
           value: item.id,
-          apiId: item.properties.ds.fetchMode === 'redirect' ? item.properties.ds.resourceId : item.properties.ds.id,
+          apiId:
+            item.properties.ds.fetchMode === 'redirect'
+              ? item.properties.ds.resourceId
+              : item.properties.ds.id,
           nodeId: item.id
         }
       })

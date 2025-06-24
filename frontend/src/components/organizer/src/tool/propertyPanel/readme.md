@@ -1,7 +1,9 @@
 # 属性面板的定义
 
 ## 数据请求属性
+
 **schema**
+
 ```js
   ds: {
     id: 571,
@@ -13,7 +15,7 @@
         paramType: 'int', // 参数要求的数据类型
         value: { // 返回的是一个值收集器的内容
           type: 'componentProp',
-          componentId: '111', // 页面组件Id' 
+          componentId: '111', // 页面组件Id'
           field: 'id', // 如果组件的属性值是对象，则可以通过field获取对象的字段
           prop: 'name', // 属性值，调用model的getProps('name')获取属性值
           dataType: 'string', // 该值的数据类型，由物料定义的该propType
@@ -26,7 +28,7 @@
         paramType: 'int', // 参数要求的数据类型
         value: { // 返回的是一个值收集器的内容
           type: 'componentProp',
-          componentId: '111', // 页面组件Id' 
+          componentId: '111', // 页面组件Id'
           field: 'id', // 如果组件的属性值是对象，则可以通过field获取对象的字段
           prop: 'name', // 属性值，调用model的getProps('name')获取属性值
           dataType: '', // 该值的数据类型，由物料定义的该propType
@@ -36,16 +38,20 @@
     headerParams: []
   }
 ```
+
 ## 页面跳转属性-todo
+
 **schema**
+
 ```js
-  pageJump: {
-    
-  }
+pageJump: {
+}
 ```
 
 ## 事件属性
+
 **schema**
+
 ```js
   event: {
     key: "click",    // 该事件的key值
@@ -54,7 +60,9 @@
 ```
 
 ## 行为属性
+
 **schema**
+
 ```js
   reactions: [ // 行为列表
     {
@@ -73,7 +81,9 @@
 ```
 
 ## 条件属性
+
 **schema**
+
 ```js
 condition: {
   conditions: [ // 条件规则列表
@@ -81,7 +91,7 @@ condition: {
       operator: '==', // 比较运算符
       key: { //  比较运算符前的值，为一个值收集器返回的值（定义见valueCollector readme）
         type: 'component',
-        componentId: '111', // 页面组件Id' 
+        componentId: '111', // 页面组件Id'
         dataType: "string",
         valueDesc: '输入框的值'
       },
@@ -96,12 +106,12 @@ condition: {
       operator: '==', // 比较运算符
       key: {
         type: 'componentProp',
-        componentId: '111', // 页面组件Id' 
+        componentId: '111', // 页面组件Id'
         field: 'id', // 如果组件的属性值是对象，则可以通过field获取对象的字段
         prop: 'name', // 属性值，调用model的getProps('name')获取属性值
         valueDesc: '表格选中行的id'
       },
-      value: { 
+      value: {
         dataType: "boolean",
         type: "option",
         value: true,
@@ -116,7 +126,7 @@ condition: {
         apiId: 1, // 对应的数据源请求的id
         field: 'data.list', // 去拿该数据源返回值的哪个字段
       },
-      value: { 
+      value: {
         dataType: "boolean",
         type: "option",
         value: true,

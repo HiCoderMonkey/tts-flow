@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <el-cascader
       ref="fieldSelector"
       v-model="val"
@@ -8,8 +8,7 @@
       :options="options"
       :props="{ expandTrigger: 'click', checkStrictly: true }"
       @change="handleChange"
-      >
-    </el-cascader>
+    />
   </div>
 </template>
 
@@ -17,9 +16,9 @@
 export default {
   props: {
     body: Object,
-    value: String,
+    value: String
   },
-  data () {
+  data() {
     return {
       val: ''
     }
@@ -28,17 +27,17 @@ export default {
     value: {
       immediate: true,
       deep: true,
-      handler (nv) {
-        this.val = this.value && this.value.split('.')  || []
+      handler(nv) {
+        this.val = (this.value && this.value.split('.')) || []
       }
-    },
+    }
   },
   computed: {
     options() {
       const tree = []
       const genTree = (body, list) => {
         if (body.properties) {
-          for(let prop in body.properties) {
+          for (const prop in body.properties) {
             const node = {
               label: prop,
               value: prop,
@@ -59,8 +58,8 @@ export default {
   methods: {
     // 选择组件后获取组件值
     handleChange(e) {
-      const checkedNodes =  this.$refs['fieldSelector'].getCheckedNodes();
-      const data = checkedNodes[0].data || {} 
+      const checkedNodes = this.$refs['fieldSelector'].getCheckedNodes()
+      const data = checkedNodes[0].data || {}
       this.$emit('change', e, data.dataType)
     }
   }

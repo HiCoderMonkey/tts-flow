@@ -1,12 +1,6 @@
 <template>
   <div>
-    <el-input 
-      v-model="val" 
-      placeholder="请输入值" 
-      size="small"
-      @change="handleChange"
-    >
-    </el-input>
+    <el-input v-model="val" placeholder="请输入值" size="small" @change="handleChange" />
   </div>
 </template>
 
@@ -14,18 +8,18 @@
 export default {
   props: {
     context: Object,
-    value: Object,
+    value: Object
   },
-  data () {
+  data() {
     return {
-      val: '',
+      val: ''
     }
   },
   watch: {
     value: {
       immediate: true,
       deep: true,
-      handler (nv) {
+      handler(nv) {
         if (nv && nv.type === 'initParam') {
           this.val = nv.value
         }
@@ -33,7 +27,7 @@ export default {
     }
   },
   methods: {
-    handleChange(e) { 
+    handleChange(e) {
       this.val = e
       const data = {
         type: 'initParam',
@@ -41,7 +35,7 @@ export default {
         dataType: 'string' // 默认string类型
       }
       this.$emit('change', data)
-    },
-  },
+    }
+  }
 }
 </script>
