@@ -7,6 +7,12 @@ from app.core.permission_config import permission_config, PermissionLevel
 from app.models.user import User
 from app.schemas.user import TokenData
 from app.utils.response import fail
+from app.core.exceptions import (
+    BusinessException,
+    NotFoundException,
+    ConflictException,
+    ErrorCode
+)
 
 # HTTP Bearer认证
 security = HTTPBearer(auto_error=False)
@@ -45,7 +51,7 @@ class AuthMiddleware:
         if not user:
             response = JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                content=fail("未认证或认证失败", code=401).dict()
+                content={"code": ErrorCode.UNAUTHORIZED, "data": {"msg": "未认证或认证失败"}}
             )
             await response(scope, receive, send)
             return
@@ -54,7 +60,7 @@ class AuthMiddleware:
         if not self._check_user_permission(user, required_permission):
             response = JSONResponse(
                 status_code=status.HTTP_403_FORBIDDEN,
-                content=fail("权限不足", code=403).dict()
+                content={"code": ErrorCode.FORBIDDEN, "data": {"msg": "权限不足"}}
             )
             await response(scope, receive, send)
             return

@@ -34,6 +34,9 @@ class PermissionConfig:
             "/api/v1/users/me": PermissionLevel.LOGIN,
             "/api/v1/users/": PermissionLevel.SUPERUSER,
             "/api/v1/users/{user_id}": PermissionLevel.SUPERUSER,
+
+            # tts工作流相关
+            "/api/v1/tts-flows": PermissionLevel.LOGIN,
             
             # 管理员相关
             "/api/v1/admin/": PermissionLevel.ADMIN,
@@ -74,9 +77,9 @@ class PermissionConfig:
         if path in self.public_paths:
             return True
         
-        # 前缀匹配
+        # 只对非根路径做前缀匹配
         for public_path in self.public_paths:
-            if path.startswith(public_path):
+            if public_path != "/" and path.startswith(public_path):
                 return True
         
         return False

@@ -180,6 +180,7 @@ export default {
     details: '详情页',
     iconPicker: '图标选择器',
     request: '请求',
+    ttsFlow: 'TTS工作流管理',
     waterfall: '瀑布流',
     imageCropping: '图片裁剪',
     videoPlayer: '视频播放器',

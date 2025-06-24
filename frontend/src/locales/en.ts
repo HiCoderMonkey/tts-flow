@@ -183,6 +183,7 @@ export default {
     details: 'Details',
     iconPicker: 'Icon picker',
     request: 'Request',
+    ttsFlow: 'TTS Flow Management',
     waterfall: 'Waterfall',
     imageCropping: 'Image cropping',
     videoPlayer: 'Video player',

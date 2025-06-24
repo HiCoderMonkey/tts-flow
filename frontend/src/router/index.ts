@@ -459,6 +459,38 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     ]
   },
   {
+    path: '/tts-flow',
+    component: Layout,
+    name: 'TTSFlow',
+    meta: {
+      title: t('router.ttsFlow'),
+      icon: 'vi-mdi:text-to-speech',
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/TTSFlow/index.vue'),
+        name: 'TTSFlowPage',
+        meta: {
+          title: t('router.ttsFlow')
+        }
+      },
+      {
+        path: 'canvas/:id',
+        component: () => import('@/views/TTSFlow/FlowCanvas.vue'),
+        name: 'TTSFlowCanvas',
+        meta: {
+          title: '流程配置',
+          noTagsView: true,
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          activeMenu: '/tts-flow/index'
+        }
+      }
+    ]
+  },
+  {
     path: '/hooks',
     component: Layout,
     redirect: '/hooks/useWatermark',

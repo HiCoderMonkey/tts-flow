@@ -4,6 +4,39 @@ import { toAnyString } from '@/utils'
 
 const timeout = 1000
 
+const ttsFlowList = [
+  {
+    path: '/tts-flow',
+    component: '#',
+    name: 'TTSFlow',
+    meta: {},
+    children: [
+      {
+        path: 'index',
+        component: 'views/TTSFlow/index',
+        name: 'TTSFlowPage',
+        meta: {
+          title: 'router.ttsFlow',
+          icon: 'vi-mdi:text-to-speech'
+        }
+      },
+      {
+        path: 'canvas/:id',
+        component: 'views/TTSFlow/FlowCanvas',
+        name: 'TTSFlowCanvas',
+        meta: {
+          title: '流程配置',
+          noTagsView: true,
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          activeMenu: '/tts-flow/index'
+        }
+      }
+    ]
+  }
+]
+
 const adminList = [
   {
     path: '/dashboard',
@@ -408,6 +441,23 @@ const adminList = [
     ]
   },
   {
+    path: '/tts-flow',
+    component: '#',
+    name: 'TTSFlow',
+    meta: {},
+    children: [
+      {
+        path: 'index',
+        component: 'views/TTSFlow/index',
+        name: 'TTSFlowPage',
+        meta: {
+          title: 'router.ttsFlow',
+          icon: 'vi-mdi:text-to-speech'
+        }
+      }
+    ]
+  },
+  {
     path: '/hooks',
     component: '#',
     redirect: '/hooks/useWatermark',
@@ -726,6 +776,8 @@ const testList: string[] = [
   '/function/multiple-tabs-demo/:id',
   '/function/request',
   '/function/test',
+  '/tts-flow',
+  '/tts-flow/index',
   '/hooks',
   '/hooks/useWatermark',
   '/hooks/useTagsView',
@@ -1188,7 +1240,7 @@ export default [
     response: () => {
       return {
         code: SUCCESS_CODE,
-        data: adminList
+        data: ttsFlowList
       }
     }
   },
