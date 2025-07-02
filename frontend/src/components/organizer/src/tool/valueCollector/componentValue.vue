@@ -35,7 +35,14 @@
 <script>
 import { EDITOR_EVENT } from '../../util/constant'
 import { getNodeName } from '../../util/node'
+import { ElSelect, ElOption, ElInput } from 'element-plus'
+
 export default {
+  components: {
+    ElSelect,
+    ElOption,
+    ElInput
+  },
   props: {
     context: Object,
     value: Object

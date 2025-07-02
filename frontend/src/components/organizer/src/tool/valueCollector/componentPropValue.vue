@@ -49,7 +49,13 @@
 
 <script>
 import { getNodeName } from '../../util/node'
+import { ElSelect, ElOption } from 'element-plus'
+
 export default {
+  components: {
+    ElSelect,
+    ElOption
+  },
   props: {
     context: Object,
     value: Object

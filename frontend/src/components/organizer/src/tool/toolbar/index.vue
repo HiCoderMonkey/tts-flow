@@ -25,7 +25,12 @@
 <script>
 import { toolMap } from '../../util/typeMap'
 import { EDITOR_EVENT } from '../../util/constant'
+import { ElTooltip } from 'element-plus'
+
 export default {
+  components: {
+    ElTooltip
+  },
   props: {
     lf: Object,
     graph: Object,

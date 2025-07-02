@@ -51,6 +51,7 @@
 import { focusNode } from '../../util/node'
 import fieldSelector from '../fieldSelector/index.vue'
 import { TypeOptions } from '../../util/dataType'
+import { ElSelect, ElOption, ElInput } from 'element-plus'
 
 export default {
   props: {
@@ -167,7 +168,9 @@ export default {
     }
   },
   components: {
-    fieldSelector
+    ElSelect,
+    ElOption,
+    ElInput
   }
 }
 </script>

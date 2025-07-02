@@ -52,6 +52,8 @@
 
 <script>
 import valueCollector from '../valueCollector/index.vue'
+import { ElRow, ElCol, ElSelect, ElOption } from 'element-plus'
+
 export default {
   props: {
     lf: Object,
@@ -163,7 +165,11 @@ export default {
     }
   },
   components: {
-    valueCollector
+    valueCollector,
+    ElRow,
+    ElCol,
+    ElSelect,
+    ElOption 
   }
 }
 </script>

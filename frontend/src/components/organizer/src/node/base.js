@@ -1,5 +1,6 @@
-import { createApp, h } from 'vue'
+import { createApp, h, toRefs, reactive } from 'vue'
 import ElementPlus from 'element-plus'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'
 import { HtmlNode, HtmlNodeModel } from '@logicflow/core'
 import { NODE_WIDTH, NODE_HEIGHT } from '../util/constant'
@@ -20,39 +21,62 @@ class BaseNodeView extends HtmlNode {
       isSelected: this.props.model.isSelected,
       isHovered: this.props.model.isHovered
     }
+    
+    // 打印 shouldUpdate 的调试信息
+    // console.log('=== shouldUpdate Debug ===')
+    // console.log('this.props.model.getProperties():', this.props.model.getProperties())
+    // console.log('data object:', data)
+    // console.log('preProperties:', this.preProperties)
+    // console.log('JSON.stringify(data):', JSON.stringify(data))
+    // console.log('========================')
+    
     if (this.preProperties && this.preProperties === JSON.stringify(data)) return
     this.preProperties = JSON.stringify(data)
     return true
   }
   setHtml(rootEl) {
-    rootEl.appendChild(this.root)
-    if (this.vm) {
-      this.vm.unmount()
+    if (!rootEl) {
+      console.warn('setHtml: rootEl is null or undefined')
+      return
     }
-    this.vm = createApp({
-      render: () =>
-        h(this.vueComponent, {
-          model: this.props.model,
-          graphModel: this.props.graphModel,
-          disabled: this.props.graphModel.editConfigModel.isSilentMode,
-          isSelected: this.props.model.isSelected,
-          isHovered: this.props.model.isHovered,
-          properties: this.props.model.getProperties()
-        })
-    })
-    this.vm.use(ElementPlus)
-    this.vm.mount(this.root)
+    
+    // 打印 model properties 的值
+    // console.log('=== setHtml Debug ===')
+    // console.log('this.props.model:',this.props.model)
+    // console.log('this.props.model.getProperties():', this.props.model.getProperties())
+    // console.log('this.props.model.isSelected:', this.props.model.isSelected)
+    // console.log('this.props.model.isHovered:', this.props.model.isHovered)
+    // console.log('=====================')
+    
+    rootEl.appendChild(this.root)
+    if(!this.vm){
+      debugger
+      this.vm = createApp({
+        render: () =>
+          h(this.vueComponent, {
+            model: this.props.model,
+            graphModel: this.props.graphModel,
+            disabled: this.props.graphModel.editConfigModel.isSilentMode,
+            isSelected: this.props.model.isSelected,
+            isHovered: this.props.model.isHovered,
+            properties: this.props.model.getProperties()
+          })
+      })
+      // this.vm.use(ElementPlus) // 这一步必不可少！
+      this.vm.mount(this.root)
+    }
+    
   }
-  getAnchorShape(anchorData) {
-    const { x, y, type } = anchorData
-    return h('rect', {
-      x: x - 3,
-      y: y - 3,
-      width: 6,
-      height: 6,
-      className: `custom-anchor ${type === 'incomming' ? 'incomming-anchor' : 'outgoing-anchor'}`
-    })
-  }
+  // getAnchorShape(anchorData) {
+  //   const { x, y, type } = anchorData
+  //   return h('rect', {
+  //     x: x - 3,
+  //     y: y - 3,
+  //     width: 6,
+  //     height: 6,
+  //     className: `custom-anchor ${type === 'incomming' ? 'incomming-anchor' : 'outgoing-anchor'}`
+  //   })
+  // }
 }
 
 class BaseNodeModel extends HtmlNodeModel {

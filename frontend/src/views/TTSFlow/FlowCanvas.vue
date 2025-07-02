@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElButton } from 'element-plus'
 import LogicPanel from '@/components/organizer/src/components/LogicPanel.vue'
 import Context from '@/components/organizer/src/context'
 import { getTTSFlow, updateTTSFlow } from '@/api/tts-flow'

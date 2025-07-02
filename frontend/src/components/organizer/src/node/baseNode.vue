@@ -1,5 +1,5 @@
 <template>
-  <div class="node-wrap" :class="[properties.status, 'base', getClassName(), properties.executeStatus]">
+  <div class="node-wrap" :class="[getStatus(), 'base', getClassName(), getExecuteStatus()]">
     <div class="node-title" @mousedown="handleMousedown" @mouseup="handleMouseup">
       <span class="node-icon">
         <img :src="getLogo()" alt="" />
@@ -11,60 +11,78 @@
       v-show="properties.warnings && properties.warnings.length"
     >
       <el-popover class="item" placement="right" width="auto" :offset="-10" trigger="click" popper-class="logic-pop">
-        <abstract-content
-          :title="'配置异常'"
-          :content="properties.warnings"
-          :showButton="false"
-        ></abstract-content>
-        <div class="warning-tip">请及时调整，以免运行错误！</div>
-        <span class="icon" slot="reference" @mousedown.stop>
-          <i class="el-icon-warning"></i>
-        </span>
+        <template #default>
+          <div>
+            <abstract-content
+              :title="'配置异常'"
+              :content="properties.warnings"
+              :showButton="false"
+            ></abstract-content>
+            <div class="warning-tip">请及时调整，以免运行错误！</div>
+          </div>
+        </template>
+        <template #reference>
+          <span class="icon" @mousedown.stop>
+            <i class="el-icon-warning"></i>
+          </span>
+        </template>
       </el-popover>
     </div>
     <div
       class="node-option"
-      v-show="(properties.status === 'selected' || properties.status === 'hovered') && !disabled"
+      v-show="showOption"
       @mousedown.capture="selectNode"
     >
       <el-tooltip class="item" effect="dark" content="复制节点" placement="top" popper-class="logic-tooltip-pop">
-        <span class="option-icon" @click="copyNode" @mousedown.stop>
-          <img src="https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/node_copy.png" />
-        </span>
+        <template #default>
+          <span class="option-icon" @click="copyNode" @mousedown.stop>
+            <img src="https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/node_copy.png" />
+          </span>
+        </template>
       </el-tooltip>
       <el-tooltip class="item" effect="dark" content="信息概览" placement="top" popper-class="logic-tooltip-pop">
-        <el-popover placement="right" width="188" :offset="-10" trigger="click" popper-class="logic-pop">
-          <abstract-content
-            :title="getAbstract().title"
-            :content="getAbstract().content"
-            :showButton="getAbstract().showButton"
-            @config="goConfig()"
-          ></abstract-content>
-          <span class="option-icon" slot="reference" @mousedown.stop>
-            <img src="https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/node_abstract.png" />
-          </span>
-        </el-popover>
+        <template #default>
+          <el-popover placement="right" width="188" :offset="-10" trigger="click" popper-class="logic-pop">
+            <template #default>
+              <abstract-content
+                :title="getAbstract().title"
+                :content="getAbstract().content"
+                :showButton="getAbstract().showButton"
+                @config="goConfig()"
+              ></abstract-content>
+            </template>
+            <template #reference>
+              <span class="option-icon" @mousedown.stop>
+                <img src="https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/node_abstract.png" />
+              </span>
+            </template>
+          </el-popover>
+        </template>
       </el-tooltip>
       <el-tooltip class="item" effect="dark" content="删除节点" placement="top" popper-class="logic-tooltip-pop">
-        <el-popconfirm
-          hide-icon
-          class="item"
-          title="确认删除该节点吗？"
-          placement="top"
-          width="180"
-          cancel-button-type=""
-          @confirm="deleteNode"
-          popper-class="logic-pop"
-        >
-          <span class="option-icon" slot="reference" @mousedown.stop>
-            <img src="https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/node_delete.png" />
-          </span>
-        </el-popconfirm>
+        <template #default>
+          <el-popconfirm
+            hide-icon
+            class="item"
+            title="确认删除该节点吗？"
+            placement="top"
+            width="180"
+            cancel-button-type=""
+            @confirm="deleteNode"
+            popper-class="logic-pop"
+          >
+            <template #reference>
+              <span class="option-icon" @mousedown.stop>
+                <img src="https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/node_delete.png" />
+              </span>
+            </template>
+          </el-popconfirm>
+        </template>
       </el-tooltip>
     </div>
-    <div class="node-next">
-      <span v-show="properties.status === 'selected' || properties.status === 'hovered'" @mousedown.stop="handleNext">
-        <i class="el-icon-circle-plus next-icon"></i>
+    <div class="node-next" v-show="showOption">
+      <span @mousedown.stop="handleNext" class="next-icon">
+        <CirclePlus/>
       </span>
     </div>
   </div>
@@ -73,6 +91,8 @@
 <script>
 import { defaultLogo } from '../util/typeMap'
 import abstractContent from '../tool/abstractContent/index.vue'
+import {CirclePlus } from '@element-plus/icons-vue'
+import {ElPopover, ElTooltip, ElPopconfirm} from 'element-plus'
 
 export default {
   props: {
@@ -86,16 +106,26 @@ export default {
   data() {
     return {
       showAddPop: false,
+      showOption: false
     }
   },
   watch: {
     isHovered(nv) {
-      console.log('nv --->>>', nv);
-      if (nv) {
+      console.log('isHovered --->>>', nv)
+      if (nv && this.model.properties.status !== 'hovered') {
         this.enterNode()
-      } else {
+      } else if (!nv && this.model.properties.status !== 'normal') {
         this.leaveNode()
       }
+    },
+    model: {
+      handler(newVal, oldVal) {
+        debuger
+        // model 及其所有属性变化时执行
+        console.log('model deep changed:', newVal)
+        // 你的操作
+      },
+      deep: true
     }
   },
   methods: {
@@ -110,6 +140,14 @@ export default {
     },
     getClassName() {
       return (this.model.getNodeClassName && this.model.getNodeClassName()) || ''
+    },
+    getStatus() {
+      debugger
+      console.log('this.model.getProperties() --->>>', this.model.properties)
+      return this.model.getProperties().status
+    },
+    getExecuteStatus() {
+      return this.model.getProperties().executeStatus
     },
     getWarning() {
       return (this.model.getNodeWarning && this.model.getNodeWarning()) || {}
@@ -144,11 +182,13 @@ export default {
       // 非拖拽才显示抽屉
       if (mousedownDuration < 1000) {
         setTimeout(() => {
+          this.showOption = true
           this.graphModel.eventCenter.emit(`node:select-click`, this.model)
         }, 100)
       }
     },
     selectNode() {
+      this.showOption = true
       this.graphModel.eventCenter.emit(`node:update-model`, this.model)
     },
     enterNode() {
@@ -176,12 +216,19 @@ export default {
     }
   },
   components: {
-    abstractContent
+    abstractContent,
+    ElPopover,
+    ElTooltip,
+    CirclePlus,
+    ElPopconfirm
   }
 }
 </script>
 
 <style scoped lang="less">
+:global([data-v-app]) {
+  height: 100%;
+}
 .base {
   --node-primary-color: #2961ef;
 }

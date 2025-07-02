@@ -33,7 +33,7 @@ class EventNodeModel extends base.model {
     let showButton = true
     if (this.properties && this.properties.componentName === 'pageInit') {
       content.push({
-        desc: '页面初始化',
+        desc: '开始',
         type: 'event'
       })
       showButton = false

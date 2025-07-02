@@ -33,7 +33,14 @@
 
 <script>
 import { TypeOptions } from '../../util/dataType'
+import { ElInput, ElSelect, ElOption } from 'element-plus'  
+
 export default {
+  components: {
+    ElInput,
+    ElSelect,
+    ElOption
+  },
   props: {
     context: Object,
     value: Object

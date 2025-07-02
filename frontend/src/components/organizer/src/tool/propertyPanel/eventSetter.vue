@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import { ElSelect, ElButton } from 'element-plus'
+
 export default {
   props: {
     lf: Object,
@@ -32,6 +34,10 @@ export default {
       type: Object,
       default: () => {}
     }
+  },
+  components:{
+    ElSelect,
+    ElButton 
   },
   model: {
     prop: 'value',

@@ -79,6 +79,7 @@ import urlParamValue from './urlParamValue.vue'
 import initParamValue from './initParamValue.vue'
 
 import { valueCollectorMap } from '../../util/typeMap'
+import { ElDropdown, ElDropdownMenu, ElDropdownItem } from 'element-plus'
 
 export default {
   props: {
@@ -178,7 +179,10 @@ export default {
     dataSourceValue,
     dataConvertValue,
     urlParamValue,
-    initParamValue
+    initParamValue,
+    ElDropdown,
+    ElDropdownMenu,
+    ElDropdownItem
   }
 }
 </script>

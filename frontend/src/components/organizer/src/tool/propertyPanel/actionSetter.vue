@@ -21,6 +21,8 @@
 
 <script>
 import actionItem from './actionItem.vue'
+import { ElLink } from 'element-plus'
+
 export default {
   props: {
     lf: Object,
@@ -83,7 +85,8 @@ export default {
     }
   },
   components: {
-    actionItem
+    actionItem,
+    ElLink
   }
 }
 </script>

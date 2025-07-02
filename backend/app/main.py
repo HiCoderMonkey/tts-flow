@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from app.core.config import settings
 from app.core.database import init_db, close_db
@@ -33,7 +34,9 @@ app = FastAPI(
     description="TTS Flow 后端API服务",
     version="1.0.0",
     debug=settings.debug,
-    lifespan=lifespan
+    lifespan=lifespan,
+    docs_url=None,  # 禁用默认的 /docs
+    redoc_url=None  # 禁用默认的 /redoc
 )
 
 # 添加认证中间件
@@ -99,6 +102,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 挂载静态文件
+import os
+static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
 # 包含API路由
 app.include_router(api_router, prefix="/api/v1")
 
@@ -116,4 +124,13 @@ async def root():
 @app.get("/health")
 async def health_check():
     """健康检查"""
-    return success({"status": "healthy"}) 
+    return success({"status": "healthy"})
+
+
+@app.get("/docs")
+async def custom_docs():
+    """自定义API文档页面"""
+    from fastapi.responses import FileResponse
+    import os
+    docs_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "docs.html")
+    return FileResponse(docs_path) 

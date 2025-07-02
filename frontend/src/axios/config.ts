@@ -50,7 +50,6 @@ const defaultResponseInterceptors = (response: AxiosResponse) => {
   } else if (response.data.code === SUCCESS_CODE) {
     return response.data
   } else {
-    debugger
     console.log(response?.data)
     ElMessage.error(response?.data?.msg)
     if (response?.data?.code === 401) {

@@ -53,6 +53,8 @@
 <script>
 import { findIndex } from 'lodash-es'
 import valueCollector from '../valueCollector/index.vue'
+import {ElTable, ElTableColumn, ElButton, ElLink} from 'element-plus'
+
 export default {
   props: {
     context: Object,
@@ -160,7 +162,11 @@ export default {
     }
   },
   components: {
-    valueCollector
+    valueCollector,
+    ElTable,
+    ElTableColumn,
+    ElButton,
+    ElLink
   }
 }
 </script>

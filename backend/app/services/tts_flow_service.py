@@ -107,4 +107,8 @@ class TTSFlowService:
         if name:
             query["name"] = {"$regex": name, "$options": "i"}
         
-        return await TTSFlow.find(query).skip(skip).limit(limit).to_list() 
+        return await TTSFlow.find(query).skip(skip).limit(limit).to_list()
+    
+    @staticmethod
+    async def get_tts_flows_total() -> int:
+        return await TTSFlow.count() 

@@ -128,6 +128,7 @@
 import paramCollector from '../paramCollector/index.vue'
 import { requestMethodMap } from '../../util/typeMap'
 import CurlImport from './curlImport.vue'
+import { ElRadioGroup, ElRadio, ElSelect, ElOption, ElInput, ElTabs, ElTabPane } from 'element-plus'
 
 export default {
   props: {
@@ -289,7 +290,14 @@ export default {
   },
   components: {
     paramCollector,
-    CurlImport
+    CurlImport,
+    ElRadioGroup,
+    ElRadio,
+    ElSelect,
+    ElOption,
+    ElInput,
+    ElTabs,
+    ElTabPane 
   }
 }
 </script>

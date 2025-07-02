@@ -42,26 +42,21 @@ export const valueCollectorMap = {
 }
 
 export const commonNodeMap = {
-  dataSource: {
-    label: '请求数据',
-    value: 'dataSource',
-    logo: 'https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/data_load.png'
-  },
-  pageJump: {
-    label: '页面跳转',
-    value: 'pageJump',
-    logo: 'https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/page_jump.png'
-  },
-  dataConvert: {
-    label: '数据转换',
-    value: 'dataConvert',
+  ttsTextChunk: {
+    label: 'TTS文本分段',
+    value: 'ttsTextChunk',
     logo: 'https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/data_trans.png'
+  },
+  spaceVoid: {
+    label: '留白',
+    value: 'spaceVoid',
+    logo: 'https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/page_jump.png'
   }
 }
 
 export const eventNodeMap = {
   pageInit: {
-    label: '页面初始化',
+    label: '开始',
     value: 'pageInit',
     logo: 'https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/page_init.png'
   }

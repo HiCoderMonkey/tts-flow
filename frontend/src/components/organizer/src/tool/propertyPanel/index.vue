@@ -1,6 +1,5 @@
 <template>
   <el-drawer
-    :modal="false"
     :append-to-body="false"
     :wrapperClosable="true"
     :destroy-on-close="true"
@@ -10,12 +9,20 @@
     width="100%"
     :size="500"
     @closeDrawer="closeDrawer"
-    v-model:visible="showDrawer"
+    v-model="showDrawer"
   >
     <div v-if="panelType !== 'condition'">
-      <div class="setter-title">设置名称</div>
-      <name-setter v-model="name" @change="handelNameChange" />
+      <div class="setter-title">节点名称</div>
+      <name-setter v-model="name" />
     </div>
+    <div v-if="panelType === 'ttsTextChunk'">
+      <div class="setter-title">文本块信息</div>
+      <TtsTextChunkSetter v-model="ttsTextChunkData" />
+    </div>
+    <div v-if="panelType === 'spaceVoid'">
+     <div class="setter-title">留白设置</div>
+     <SpaceVoidSetter v-model="spaceData" />
+   </div>
     <div v-if="panelType === 'action'">
       <div class="setter-title">设置行为</div>
       <action-setter v-model="actions" :context="context" :current="currentModel" :lf="lf" />
@@ -40,7 +47,7 @@
       <div class="setter-title">数据转换</div>
       <dc-setter v-model="dc" :lf="lf" :context="context" :current="currentModel" />
     </div>
-    <!-- <el-button
+    <el-button
       type="primary"
       size="small"
       @click="handleSubmit"
@@ -49,202 +56,172 @@
     >
     <el-button size="small" @click="handleCancel" class="properties-button"
       >取消</el-button
-    > -->
+    >
   </el-drawer>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref, reactive, onMounted } from 'vue'
 import { map, filter } from 'lodash-es'
 import { validateCode } from '../../util/validate'
 import actionSetter from './actionSetter.vue'
 import conditionSetter from './conditionSetter.vue'
 import eventSetter from './eventSetter.vue'
-import dsSetter from './dsSetter.vue' // DataSource
+import dsSetter from './dsSetter.vue'
 import nameSetter from './nameSetter.vue'
 import pageJumpSetter from './pageJumpSetter.vue'
-import dcSetter from './dcSetter.vue' // DataConvert
+import dcSetter from './dcSetter.vue'
+import TtsTextChunkSetter from './ttsTextChunkSetter.vue'
+import SpaceVoidSetter from './spaceVoidSetter.vue'
+import { ElDrawer, ElButton } from 'element-plus'
 
-export default {
-  props: {
-    lf: Object,
-    context: Object
-  },
-  data() {
-    return {
-      panelType: '',
-      showDrawer: false,
-      currentModel: {},
-      currentNode: {},
-      currentEdge: {},
-      actions: [],
-      condition: {},
-      event: {},
-      ds: {}, // DataSource
-      pageJump: {},
-      dc: {}, // DataConvert
-      name: ''
-    }
-  },
-  mounted() {
-    this.lf.on('node:click', ({ data }) => {
-      console.log('data', data)
-    })
-    this.lf.on('blank:click', () => {
-      this.showDrawer = false
-      this.panelType = ''
-      this.currentEdge = null
-    })
-    // 点击边处理
-    this.lf.on('edge:option-click', (model) => {
-      this.currentEdge = model
-      const properties = model.getProperties()
-      this.condition = properties.condition || {}
-      this.showDrawer = true
-      this.panelType = 'condition'
-    })
-    // 点击节点处理
-    this.lf.on('node:select-click', (model) => {
-      console.log('model ===>>>', model)
-      this.currentNode = model
-      const properties = model.getProperties()
-      this.name = properties.name
-      switch (model.type) {
-        case 'event-node':
-          this.event = (properties && properties.event) || {}
-          this.panelType = 'event'
-          if (model.properties && model.properties.componentName !== 'pageInit') {
-            this.showDrawer = true
-          }
-          break
-        case 'reaction-node':
-          this.actions = (properties && properties.reactions) || []
-          this.panelType = 'action'
-          this.showDrawer = true
-          break
-        case 'common-node':
-          if (properties && properties.componentName === 'dataSource') {
-            // 打开数据源设置器
-            this.ds = (properties && properties.ds) || {}
-            this.panelType = 'ds'
-            this.showDrawer = true
-          } else if (properties && properties.componentName === 'pageJump') {
-            // 打开页面跳转设置器
-            this.pageJump = (properties && properties.pageJump) || {}
-            this.panelType = 'pageJump'
-            this.showDrawer = true
-          } else if (properties && properties.componentName === 'dataConvert') {
-            // 打开数据转换设置器
-            this.dc = (properties && properties.dc) || {}
-            this.panelType = 'dc'
-            this.showDrawer = true
-          }
-          break
-      }
-    })
-  },
-  methods: {
-    handleChange(data, type) {
-      this[type] = data
-    },
-    handelNameChange(val) {
-      this.name = val
-    },
-    handleSubmit() {
-      const currentNode = this.currentNode
-      this.lf.setProperties(currentNode.id, {
-        name: this.name
-      })
-      console.log('this.panelType ...???', this.panelType)
-      switch (this.panelType) {
-        case 'action':
-          this.lf.setProperties(currentNode.id, {
-            reactions: this.actions
-          })
-          break
-        case 'condition':
-          if (this.currentEdge) {
-            this.lf.setProperties(this.currentEdge.id, {
-              condition: this.condition
-            })
-          }
-          break
-        case 'event':
-          this.lf.setProperties(currentNode.id, {
-            event: this.event
-          })
-          break
-        case 'ds': // DataSource
-          this.lf.setProperties(currentNode.id, {
-            ds: this.ds
-          })
-          break
-        case 'pageJump':
-          this.lf.setProperties(currentNode.id, {
-            pageJump: this.pageJump
-          })
-          break
-        case 'dc': {
-          // DataConvert
-          // DONE1: 做请求数据的必填校验（?），是否需要
-          const { convertList = [], convertCode } = this.dc
-          // DONE2: 做输入代码段校验，并提示
-          // 1. 校验js语法是否正确
-          // 2. 检测代码中是否有动态插入的 script 标签
-          // 3. 是否需要关注 SQL 注入的危险
-          // 4. HTTP 请求是否应该屏蔽
+const props = defineProps<{ lf: any; context: any }>()
+const emit = defineEmits(['submit'])
 
-          if (!convertCode) {
-            this.$message.error('数据转换函数不能为空')
-            return false
-          }
+const panelType = ref('')
+const showDrawer = ref(true)
+const currentModel = ref<any>({})
+const currentNode = ref<any>({})
+const currentEdge = ref<any>(null)
+const actions = ref<any[]>([])
+const condition = ref<any>({})
+const event = ref<any>({})
+const ds = ref<any>({})
+const pageJump = ref<any>({})
+const dc = ref<any>({})
+const name = ref('')
+const edgeProperties = ref()
+const ttsTextChunkData = ref({ text: '', audioUrl: '' })
+const spaceData = ref({ duration: 2 })
 
-          // 生成预期的函数体，用如下方法包裹用户输入的函数体。
-          // function main(arg1, arg2, ...) {}
-          try {
-            const keyList = filter(
-              map(convertList, (item) => item.key),
-              (key) => key
-            )
-            const funcParams = keyList.join(', ')
-            const fullFunc = `function main(${funcParams}) {
-              ${convertCode}
-            }`
-
-            const valid = validateCode(fullFunc)
-            if (!valid) {
-              throw new Error('代码校验未通过，请确认代码是否合规')
-            }
-          } catch (error) {
-            console.error('ops, something error --->>>', error)
-            this.$message.error(error?.message)
-            return
-          }
-
-          this.lf.setProperties(currentNode.id, {
-            dc: this.dc
-          })
-          break
+onMounted(() => {
+  props.lf.on('node:click', ({ data }: any) => {
+    console.log('data', data)
+  })
+  props.lf.on('blank:click', () => {
+    showDrawer.value = false
+    panelType.value = ''
+    currentEdge.value = null
+  })
+  // 点击边处理
+  props.lf.on('edge:option-click', (model: any) => {
+    currentEdge.value = model
+    const properties = model.getProperties()
+    condition.value = properties.condition || {}
+    showDrawer.value = true
+    panelType.value = 'condition'
+  })
+  // 点击节点处理
+  props.lf.on('node:select-click', (model: any) => {
+    debugger
+    console.log('model ===>>>', model)
+    currentModel.value = model
+    const properties = model.getProperties()
+    name.value = properties.name
+    switch (model.type) {
+      case 'event-node':
+        event.value = (properties && properties.event) || {}
+        panelType.value = 'event'
+        if (model.properties && model.properties.componentName !== 'pageInit') {
+          showDrawer.value = true
         }
-      }
-      this.showDrawer = false
-      this.$emit('submit', this.panelType)
-    },
-    handleCancel() {
-      this.showDrawer = false
-    },
-    closeDrawer() {
-      this.currentEdge = null
+        break
+      case 'reaction-node':
+        actions.value = (properties && properties.reactions) || []
+        panelType.value = 'action'
+        showDrawer.value = true
+        break
+      case 'common-node':
+        panelType.value = properties.componentName
+        ttsTextChunkData.value = properties.nodeContentData || {}
+        showDrawer.value = true
+        break
     }
-  },
-  components: {
-    conditionSetter,
-    actionSetter,
-    eventSetter,
-    dsSetter,
-    nameSetter,
-    pageJumpSetter,
-    dcSetter
+  })
+})
+
+function handleSubmit() {
+  debugger
+  console.log('name --->>>', name.value)
+  console.log('ttsTextChunkData --->>>', ttsTextChunkData.value)
+  const currentNodeVal = currentModel.value
+  props.lf.setProperties(currentNodeVal.id, {
+    name: name.value
+  })
+  console.log('panelType ...???', panelType.value)
+  switch (panelType.value) {
+    case 'ttsTextChunk':
+      props.lf.setProperties(currentNodeVal.id, {
+        nodeContentData: ttsTextChunkData.value
+      })
+      break
+    case 'action':
+      props.lf.setProperties(currentNodeVal.id, {
+        reactions: actions.value
+      })
+      break
+    case 'condition':
+      if (currentEdge.value) {
+        props.lf.setProperties(currentEdge.value.id, {
+          condition: condition.value
+        })
+      }
+      break
+    case 'event':
+      props.lf.setProperties(currentNodeVal.id, {
+        event: event.value
+      })
+      break
+    case 'ds':
+      props.lf.setProperties(currentNodeVal.id, {
+        ds: ds.value
+      })
+      break
+    case 'pageJump':
+      props.lf.setProperties(currentNodeVal.id, {
+        pageJump: pageJump.value
+      })
+      break
+    case 'dc': {
+      const { convertList = [], convertCode } = dc.value
+      if (!convertCode) {
+        // @ts-ignore
+        window?.$message?.error?.('数据转换函数不能为空')
+        return false
+      }
+      try {
+        const keyList = filter(
+          map(convertList, (item) => item.key),
+          (key) => key
+        )
+        const funcParams = keyList.join(', ')
+        const fullFunc = `function main(${funcParams}) {\n${convertCode}\n}`
+        const valid = validateCode(fullFunc)
+        if (!valid) {
+          throw new Error('代码校验未通过，请确认代码是否合规')
+        }
+      } catch (error: any) {
+        console.error('ops, something error --->>>', error)
+        // @ts-ignore
+        window?.$message?.error?.(error?.message)
+        return
+      }
+      props.lf.setProperties(currentNodeVal.id, {
+        dc: dc.value
+      })
+      break
+    }
   }
+  showDrawer.value = false
+  emit('submit', panelType.value)
+}
+
+function handleCancel() {
+  showDrawer.value = false
+}
+
+function closeDrawer() {
+  currentEdge.value = null
 }
 </script>
 

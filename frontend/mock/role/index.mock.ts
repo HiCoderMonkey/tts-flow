@@ -34,6 +34,34 @@ const ttsFlowList = [
         }
       }
     ]
+  },
+  {
+    path: '/tts-resource',
+    component: '#',
+    name: 'TTSResource',
+    meta: {
+      title: 'router.ttsResource',
+      icon: 'vi-mdi:database-cog',
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'platform',
+        component: 'views/TTSResource/TTSPlatform/TTSPlatform',
+        name: 'TTSPlatform',
+        meta: {
+          title: 'router.ttsPlatform'
+        }
+      },
+      {
+        path: 'voice',
+        component: 'views/TTSResource/TTSVoice/TTSVoice',
+        name: 'TTSVoice',
+        meta: {
+          title: 'router.ttsVoice'
+        }
+      }
+    ]
   }
 ]
 
@@ -778,6 +806,9 @@ const testList: string[] = [
   '/function/test',
   '/tts-flow',
   '/tts-flow/index',
+  '/tts-resource',
+  '/tts-resource/platform',
+  '/tts-resource/voice',
   '/hooks',
   '/hooks/useWatermark',
   '/hooks/useTagsView',
@@ -944,6 +975,44 @@ const menus = [
           permission: ['edit', 'add', 'delete'],
           meta: {
             title: '菜单2',
+            permission: ['edit', 'add', 'delete']
+          }
+        }
+      ]
+    },
+    {
+      path: '/tts-resource',
+      component: '#',
+      name: 'TTSResource',
+      status: Mock.Random.integer(0, 1),
+      id: 18,
+      meta: {
+        title: 'TTS资源管理',
+        icon: 'vi-mdi:database-cog',
+        alwaysShow: true
+      },
+      children: [
+        {
+          path: 'platform',
+          component: 'views/TTSResource/TTSPlatform',
+          name: 'TTSPlatform',
+          status: Mock.Random.integer(0, 1),
+          id: 19,
+          permission: ['edit', 'add', 'delete'],
+          meta: {
+            title: 'TTS平台管理',
+            permission: ['edit', 'add', 'delete']
+          }
+        },
+        {
+          path: 'voice',
+          component: 'views/TTSResource/TTSVoice',
+          name: 'TTSVoice',
+          status: Mock.Random.integer(0, 1),
+          id: 20,
+          permission: ['edit', 'add', 'delete'],
+          meta: {
+            title: 'TTS音色管理',
             permission: ['edit', 'add', 'delete']
           }
         }

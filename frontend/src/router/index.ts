@@ -491,6 +491,34 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     ]
   },
   {
+    path: '/tts-resource',
+    component: Layout,
+    name: 'TTSResource',
+    meta: {
+      title: t('router.ttsResource'),
+      icon: 'vi-mdi:database-cog',
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'platform',
+        component: () => import('@/views/TTSResource/TTSPlatform/TTSPlatform.vue'),
+        name: 'TTSPlatform',
+        meta: {
+          title: t('router.ttsPlatform')
+        }
+      },
+      {
+        path: 'voice',
+        component: () => import('@/views/TTSResource/TTSVoice/TTSVoice.vue'),
+        name: 'TTSVoice',
+        meta: {
+          title: t('router.ttsVoice')
+        }
+      }
+    ]
+  },
+  {
     path: '/hooks',
     component: Layout,
     redirect: '/hooks/useWatermark',

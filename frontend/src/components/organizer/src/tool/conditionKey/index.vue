@@ -24,10 +24,16 @@
 </template>
 
 <script>
+import {ElSelect, ElOption} from 'element-plus'
+
 export default {
   props: {
     context: Object,
     defaultValue: [String, Number, Boolean, Object, Array]
+  },
+  components: {
+    ElSelect,
+    ElOption
   },
   data() {
     return {

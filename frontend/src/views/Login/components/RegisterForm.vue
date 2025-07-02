@@ -168,7 +168,6 @@ const loginRegister = async () => {
   formRef?.validate(async (valid) => {
     if (valid) {
       try {
-        debugger
         loading.value = true
         const formData = await getFormData<RegisterType>()
         // 调用注册接口

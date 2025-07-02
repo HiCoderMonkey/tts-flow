@@ -8,7 +8,7 @@
   >
     <div ref="container" class="logic-container"></div>
     <toolbar :lf="lf" :graph="graph" />
-    <property-panel v-if="lf" :lf="lf" :context="context" @submit="handleSubmit" />
+    <property-panel v-if="lfReady" :lf="lf" :context="context" @submit="handleSubmit" />
   </div>
 </template>
 
@@ -16,8 +16,9 @@
 import LogicFlow from '@logicflow/core'
 import { Dagre } from '@logicflow/layout'
 import { MiniMap, SelectionSelect, Menu } from '@logicflow/extension'
+import { createApp, h } from 'vue'
 
-import '@logicflow/core/dist/style/index.css'
+import "@logicflow/core/lib/style/index.css"
 import '@logicflow/extension/lib/style/index.css'
 
 import propertyPanel from '../tool/propertyPanel/index.vue'
@@ -105,7 +106,7 @@ export default {
         grid: {
           size: 10,
           visible: false
-        }
+        },
       })
       this.lf.batchRegister([logicLine, reaction, common, event])
       this.lf.render(graphData)
@@ -132,7 +133,8 @@ export default {
       this.graph.initView()
 
       // REMIND: 临时将 lf 挂到 window 方便调试
-      window.lf = this.lf
+      // window.lf = this.lf
+      this.lfReady=true
     },
 
     // 初始化事件
@@ -170,6 +172,7 @@ export default {
         this.currentModel = model
       })
       this.lf.on('history:change', () => {
+        debugger
         this.setGraphDataToContext()
       })
       this.lf.on('node:add-node', ({ model, type, properties }) => {
@@ -240,21 +243,18 @@ export default {
     initPopover() {
       const { popover } = this.lf.extension
       popover.registerPopover('tip1', {
-        // TODO: 后续支持传递属性
         render: (rootEl, data) => {
-          const vm = new Vue({
-            render: (h) =>
+          const vm = createApp({
+            render: () =>
               h(insertMenu, {
-                props: {
-                  lf: this.lf,
-                  context: this.context,
-                  graph: this.graph,
-                  model: this.currentModel,
-                  showConnectBlock: data.props.showConnectBlock
-                }
+                lf: this.lf,
+                context: this.context,
+                graph: this.graph,
+                model: this.currentModel,
+                showConnectBlock: data.props.showConnectBlock
               })
           })
-          vm.$mount(rootEl)
+          vm.mount(rootEl)
         }
       })
     },
@@ -281,6 +281,7 @@ export default {
       }
     },
     setGraphDataToContext() {
+      debugger
       const graphData = this.lf.getGraphData()
       graphData.nodes.forEach((node) => {
         if (node.properties) {
@@ -317,6 +318,7 @@ export default {
       })
     },
     handleSubmit(type) {
+      debugger
       if (type === 'ds') {
         this.checkRelatedDs()
       }
@@ -370,7 +372,7 @@ export default {
         properties: {
           componentId: 'page_init',
           componentName: 'pageInit',
-          name: '页面初始化'
+          name: '开始'
         }
       }
       const reqNode = {

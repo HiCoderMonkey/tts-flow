@@ -16,9 +16,11 @@ class PermissionConfig:
     def __init__(self):
         # 公开路径（不需要认证）
         self.public_paths: Set[str] = {
-            "/",
-            "/health",
             "/docs",
+            "/static",
+            "/favicon.ico"
+            "/.well-known",
+            "/health",
             "/redoc",
             "/openapi.json",
             "/api/v1/auth/login",

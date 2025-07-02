@@ -13,10 +13,15 @@
 </template>
 
 <script>
+import {ElCascader} from 'element-plus'
+
 export default {
   props: {
     body: Object,
     value: String
+  },
+  components: {
+    ElCascader
   },
   data() {
     return {

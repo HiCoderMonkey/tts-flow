@@ -10,7 +10,8 @@ import {
   ElForm,
   ElFormItem,
   ElMessage,
-  ElMessageBox
+  ElMessageBox,
+  ElPagination
 } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -29,6 +30,9 @@ const dialogVisible = ref(false)
 const dialogTitle = ref('')
 const isEdit = ref(false)
 const currentId = ref('')
+const total = ref(0)
+const pageIndex = ref(1)
+const pageSize = ref(10)
 
 // 表单数据
 const formData = reactive<TTSFlowCreate>({
@@ -70,12 +74,16 @@ const formRef = ref()
 const getTTSFlowsList = async () => {
   loading.value = true
   try {
-    const params: any = {}
+    const params: any = {
+      pageIndex: pageIndex.value,
+      pageSize: pageSize.value
+    }
     if (searchName.value) {
       params.name = searchName.value
     }
     const res = await getTTSFlows(params)
-    tableData.value = (res as any).data || []
+    tableData.value = res.data?.list || []
+    total.value = res.data?.total || 0
   } catch (error) {
     console.error('获取工作流列表失败:', error)
     ElMessage.error('获取工作流列表失败')
@@ -86,12 +94,14 @@ const getTTSFlowsList = async () => {
 
 // 搜索
 const handleSearch = () => {
+  pageIndex.value = 1
   getTTSFlowsList()
 }
 
 // 重置搜索
 const resetSearch = () => {
   searchName.value = ''
+  pageIndex.value = 1
   getTTSFlowsList()
 }
 
@@ -217,6 +227,18 @@ const getNodeCount = (config: any) => {
   }
 }
 
+// 处理分页变化
+const handlePageChange = (val: number) => {
+  pageIndex.value = val
+  getTTSFlowsList()
+}
+
+const handleSizeChange = (val: number) => {
+  pageSize.value = val
+  pageIndex.value = 1
+  getTTSFlowsList()
+}
+
 // 页面加载时获取数据
 onMounted(() => {
   getTTSFlowsList()
@@ -265,6 +287,17 @@ onMounted(() => {
         </template>
       </ElTableColumn>
     </ElTable>
+    <el-pagination
+      class="mt-4"
+      background
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+      v-model:current-page="pageIndex"
+      v-model:page-size="pageSize"
+      :page-sizes="[10, 20, 50, 100]"
+      @current-change="handlePageChange"
+      @size-change="handleSizeChange"
+    />
 
     <!-- 创建/编辑对话框 -->
     <Dialog v-model="dialogVisible" :title="dialogTitle" width="800px" :max-height="600">

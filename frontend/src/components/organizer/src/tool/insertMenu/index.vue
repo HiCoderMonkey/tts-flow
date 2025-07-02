@@ -44,6 +44,7 @@
 <script>
 import { commonNodeMap, defaultLogo } from '../../util/typeMap'
 import { getNodeName } from '../../util/node'
+import {ElMenu,ElMenuItem} from 'element-plus'
 
 export default {
   props: {
@@ -54,6 +55,10 @@ export default {
     position: Object,
     model: Object,
     showConnectBlock: Boolean
+  },
+  components:{
+    ElMenu,
+    ElMenuItem
   },
   data() {
     return {

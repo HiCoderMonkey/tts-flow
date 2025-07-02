@@ -1,6 +1,5 @@
-// const { PolylineEdge, PolylineEdgeModel, h} = window;
-
-import { PolylineEdge, PolylineEdgeModel, h } from '@logicflow/core'
+import { PolylineEdge, PolylineEdgeModel , h as lfH } from '@logicflow/core'
+import { createApp, nextTick, h as vueH } from 'vue'
 import logicLineNode from './logicLineNode.vue'
 import { pointFilter } from '../util/edge'
 import { NODE_HEIGHT, LINE_OFFSET, NODE_WIDTH } from '../util/constant'
@@ -12,19 +11,26 @@ const WORD_HEIGHT = 16
 class LogicPolyline extends PolylineEdge {
   constructor(props) {
     super(props)
-    this.vm = new Vue({
-      render: (h) =>
-        h(logicLineNode, {
-          props: {
-            model: this.props.model,
-            graphModel: this.props.graphModel,
-            properties: this.props.model.getProperties(),
-            isSelected: this.props.model.isSelected,
-            isHovered: this.props.model.isHovered
-          }
+    this.vm = null
+    this.textComponent = logicLineNode
+  }
+  
+  createVueInstance() {
+    console.log('初始化line节点')
+    console.log('logicLineNode',logicLineNode)
+    this.vm = createApp({
+      render: () =>
+        vueH(logicLineNode, {
+          model: this.props.model,
+          graphModel: this.props.graphModel,
+          properties: this.props.model.getProperties(),
+          isSelected: this.props.model.isSelected,
+          isHovered: this.props.model.isHovered
         })
     })
+    console.log('this.vm',this.vm)
   }
+  
   shouldUpdate() {
     const data = {
       ...this.props.model.properties,
@@ -96,11 +102,24 @@ class LogicPolyline extends PolylineEdge {
 
     const { model } = this.props
     const id = model.id
+    // 使用 nextTick 确保 DOM 已经渲染
     setTimeout(() => {
-      const addContainer = document.querySelector('#' + 'line_' + id).querySelector('.add-wrapper')
-      this.vm.$mount(addContainer)
-    }, 0)
-    return h(
+      try {
+        const lineElement = document.querySelector('#' + 'line_' + id)
+        if (lineElement) {
+          const addContainer = lineElement.querySelector('.add-wrapper')
+          console.log('addContainer',addContainer)
+          if (addContainer) {
+            this.createVueInstance()
+            this.vm.mount(addContainer)
+            console.log('this.vm',this.vm)
+          }
+        }
+      } catch (error) {
+        console.warn('Failed to mount Vue instance to line element:', error)
+      }
+    },0)
+    return lfH(
       'foreignObject',
       {
         ...positionData,
@@ -108,13 +127,13 @@ class LogicPolyline extends PolylineEdge {
         style: `z-index: 20; width: ${width ? width : height}px`
       },
       [
-        h(
+        lfH(
           'div',
           {
             style: `display:flex;width: 100%;flex-direction: ${direction};`
           },
           [
-            h('div', {
+            lfH('div', {
               className: 'add-wrapper'
             })
           ]

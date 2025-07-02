@@ -23,19 +23,24 @@ async def create_tts_flow(
 @router.get("")
 async def read_tts_flows(
     request: Request,
-    skip: int = Query(0, ge=0, description="跳过记录数"),
-    limit: int = Query(100, ge=1, le=1000, description="限制记录数"),
+    pageIndex: int = Query(1, alias="pageIndex"),
+    pageSize: int = Query(10, alias="pageSize"),
     name: str = Query(None, description="按名称搜索")
 ):
-    """获取TTS工作流列表"""
+    """分页获取TTS工作流列表"""
     current_user = await get_current_active_user(request)
-    
+    skip = (pageIndex - 1) * pageSize
+    limit = pageSize
     if name:
+        total = await TTSFlow.find({"name": {"$regex": name, "$options": "i"}}).count()
         tts_flows = await TTSFlowService.search_tts_flows(name=name, skip=skip, limit=limit)
     else:
+        total = await TTSFlowService.get_tts_flows_total()
         tts_flows = await TTSFlowService.get_tts_flows(skip=skip, limit=limit)
-    
-    return success([tts_flow.dict() for tts_flow in tts_flows])
+    return success({
+        "total": total,
+        "list": [tts_flow.dict() for tts_flow in tts_flows]
+    })
 
 
 @router.get("/{flow_id}", response_model=TTSFlowSchema)

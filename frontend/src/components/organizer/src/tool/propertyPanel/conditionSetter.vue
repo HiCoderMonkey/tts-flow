@@ -41,6 +41,8 @@
 
 <script>
 import conditionItem from './conditionItem.vue'
+import { ElLink, ElRow, ElRadio, ElInput } from 'element-plus'
+
 export default {
   props: {
     lf: Object,
@@ -142,7 +144,11 @@ export default {
     }
   },
   components: {
-    conditionItem
+    conditionItem,
+    ElLink,
+    ElRow,
+    ElRadio,
+    ElInput 
   }
 }
 </script>

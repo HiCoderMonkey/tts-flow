@@ -3,7 +3,7 @@
     <label class="label">节点名称:</label>
     <el-input
       class="input"
-      v-model="val"
+      v-model="localValue"
       placeholder="请输入值"
       size="small"
       @change="handleChange"
@@ -12,31 +12,22 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    value: String
-  },
-  data() {
-    return {
-      val: ''
-    }
-  },
-  watch: {
-    value: {
-      immediate: true,
-      deep: true,
-      handler(nv) {
-        this.val = nv
-      }
-    }
-  },
-  methods: {
-    handleChange(e) {
-      this.val = e
-      this.$emit('change', e)
-    }
-  }
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import { ElInput } from 'element-plus'
+
+const props = defineProps<{ modelValue: string }>()
+const emit = defineEmits(['update:modelValue'])
+
+const localValue = ref(props.modelValue)
+
+watch(() => props.modelValue, (newVal) => {
+  localValue.value = newVal
+}, { immediate: true })
+
+function handleChange(e: string) {
+  localValue.value = e
+  emit('update:modelValue', e)
 }
 </script>
 

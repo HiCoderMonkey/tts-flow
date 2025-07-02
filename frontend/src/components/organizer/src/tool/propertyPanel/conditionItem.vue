@@ -50,6 +50,7 @@
 <script>
 import valueCollector from '../valueCollector/index.vue'
 import { comparisonOperators } from '../../util/expression'
+import { ElRow, ElCol, ElSelect, ElOption } from 'element-plus'
 
 export default {
   props: {
@@ -123,7 +124,11 @@ export default {
     }
   },
   components: {
-    valueCollector
+    valueCollector,
+    ElRow,
+    ElCol,
+    ElSelect,
+    ElOption
   }
 }
 </script>

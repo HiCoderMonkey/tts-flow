@@ -133,10 +133,17 @@
 import qs from 'qs'
 import { mapKeys } from 'lodash-es'
 import valueCollector from '../valueCollector/index.vue'
+import { ElRadioGroup, ElRadio, ElSelect, ElOption, ElInput, ElLink } from 'element-plus'
 
 export default {
   components: {
-    valueCollector
+    valueCollector,
+    ElRadioGroup,
+    ElRadio,
+    ElSelect,
+    ElOption,
+    ElInput,
+    ElLink
   },
   props: {
     lf: Object,

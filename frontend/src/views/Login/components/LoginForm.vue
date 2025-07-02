@@ -292,7 +292,6 @@ const getRole = async () => {
   const params = {
     roleName: formData.username
   }
-  debugger
   const res =
     appStore.getDynamicRouter && appStore.getServerDynamicRouter
       ? await getAdminRoleApi(params)

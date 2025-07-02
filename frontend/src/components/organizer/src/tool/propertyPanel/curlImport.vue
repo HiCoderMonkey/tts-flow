@@ -22,9 +22,14 @@
 </template>
 
 <script>
+import { ElButton, ElDialog } from 'element-plus'
+
 export default {
   name: '',
-  components: {},
+  components: {
+    ElButton,
+    ElDialog 
+  },
   data() {
     return {
       dialogInfo: {

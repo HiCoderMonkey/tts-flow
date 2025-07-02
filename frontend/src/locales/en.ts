@@ -99,7 +99,11 @@ export default {
     dynamicRouter: 'Enable dynamic router',
     serverDynamicRouter: 'Server dynamic router',
     reExperienced: 'Please exit the login experience again',
-    fixedMenu: 'Fixed menu'
+    fixedMenu: 'Fixed menu',
+    ttsFlow: 'TTS Flow Management',
+    ttsResource: 'TTS Resource Management',
+    ttsPlatform: 'TTS Platform Management',
+    ttsVoice: 'TTS Voice Management'
   },
   size: {
     default: 'Default',

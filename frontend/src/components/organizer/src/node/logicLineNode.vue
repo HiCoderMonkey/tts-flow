@@ -1,79 +1,22 @@
 <template>
   <div class="line-content" :class="isSelected && 'selected'">
-    <el-popover
-      placement="right"
-      width="200"
-      trigger="click"
-      v-model="popVisible"
-      v-if="
-        properties.condition &&
-        properties.condition &&
-        properties.condition.conditions &&
-        properties.condition.conditions.length
-      "
-    >
-      <div class="popover-content">
-        <div class="condition-wrap">
-          <div class="condition-title">我配置的条件</div>
-          <div class="condition-content">
-            <div
-              class="condition-item"
-              v-for="(item, index) in properties.condition.conditions"
-              :key="index"
-            >
-              <img
-                class="icon"
-                src="https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/edge_condition.png"
-                alt=""
-              />
-              <span>{{ getConditionItem(item) }}</span>
-            </div>
-            <div class="condition-button" @click="goCondition">去配置</div>
+    <el-popover placement="right" width="100" trigger="click">
+      <template #default>
+        <div class="popover-content">
+          <div class="popover-item" @click="insertNode">
+            <img
+              class="icon"
+              src="https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/pop_insert_node.png"
+              alt=""
+            />
+            插入节点
           </div>
         </div>
-        <div class="popover-item" @click="insertNode">
-          <img
-            class="icon"
-            src="https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/pop_insert_node.png"
-            alt=""
-          />
-          插入节点
-        </div>
-      </div>
-      <template v-slot:reference>
-        <div class="line-icon" :class="isSelected && 'selected'" @click.stop="handleIconClick">
-          <img
-            class="icon"
-            src="https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/edge_condition.png"
-            alt=""
-          />
-        </div>
       </template>
-    </el-popover>
-    <el-popover placement="right" width="100" trigger="click" v-model="popVisible" v-else>
-      <div class="popover-content">
-        <div class="popover-item" @click="goCondition">
-          <img
-            class="icon"
-            src="https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/pop_add_option.png"
-            alt=""
-          />
-          添加条件
-        </div>
-        <div class="popover-item" @click="insertNode">
-          <img
-            class="icon"
-            src="https://s3-gzpu.didistatic.com/tiyan-base-store/suda/organizer/icons/pop_insert_node.png"
-            alt=""
-          />
-          插入节点
-        </div>
-      </div>
-      <template v-slot:reference>
+      <template #reference>
         <div
           class="line-icon"
           :class="isSelected && 'selected'"
-          v-show="isSelected || isHovered"
           @click.stop="handleIconClick"
         >
           <img
@@ -88,7 +31,13 @@
 </template>
 
 <script>
+import { ElPopover } from 'element-plus'
+
+
 export default {
+  components: {
+    ElPopover
+  },
   props: {
     model: Object,
     graphModel: Object,
@@ -98,7 +47,7 @@ export default {
   },
   data() {
     return {
-      popVisible: false
+      popVisible: true
     }
   },
   mounted() {
@@ -135,14 +84,17 @@ export default {
         this.graphModel.popover.hide(this.popoverItemKey)
     },
     handleIconClick(e) {
+      debugger
       this.iconEvent = e
       this.graphModel.eventCenter.emit(`edge:update-model`, this.model)
     },
     goCondition() {
+      debugger
       this.graphModel.eventCenter.emit(`edge:option-click`, this.model)
       this.popVisible = false
     },
     insertNode() {
+      debugger
       const { clientX, clientY, offsetX, offsetY } = this.iconEvent
       const point = this.graphModel.getPointByClient({
         x: clientX - offsetX + 16,

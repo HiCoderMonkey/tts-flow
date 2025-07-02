@@ -5,7 +5,12 @@
 </template>
 
 <script>
+import { ElInput } from 'element-plus'  
+
 export default {
+  components: {
+    ElInput
+  },
   props: {
     context: Object,
     value: Object

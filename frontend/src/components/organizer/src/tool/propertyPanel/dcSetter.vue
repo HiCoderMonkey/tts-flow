@@ -53,10 +53,14 @@
 import _ from 'lodash'
 // import CodeFlask from 'codeflask'
 import valueCollector from '../valueCollector/index.vue'
+import { ElInput, ElLink, ElAlert } from 'element-plus'
 
 export default {
   components: {
-    valueCollector
+    valueCollector,
+    ElInput,
+    ElLink,
+    ElAlert 
   },
   props: {
     context: Object,

@@ -3,6 +3,8 @@ from beanie import init_beanie
 from app.core.config import settings
 from app.models.user import User
 from app.models.tts_flow import TTSFlow
+from app.models.tts_platform import TTSPlatform
+from app.models.tts_voice import TTSVoice
 
 
 async def init_db():
@@ -13,7 +15,7 @@ async def init_db():
     # 初始化Beanie
     await init_beanie(
         database=client[settings.database_name],
-        document_models=[User, TTSFlow]
+        document_models=[User, TTSFlow, TTSPlatform, TTSVoice]
     )
 
 

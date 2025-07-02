@@ -2,8 +2,8 @@ import request from '@/axios'
 import type { TTSFlow, TTSFlowCreate, TTSFlowUpdate } from './types'
 
 // 获取TTS工作流列表
-export const getTTSFlows = (params?: { name?: string; skip?: number; limit?: number }) => {
-  return request.get<IResponse<TTSFlow[]>>({ url: '/api/v1/tts-flows', params })
+export const getTTSFlows = (params?: { pageIndex?: number; pageSize?: number; name?: string }) => {
+  return request.get<IResponse<{ total: number; list: TTSFlow[] }>>({ url: '/api/v1/tts-flows', params })
 }
 
 // 获取单个TTS工作流

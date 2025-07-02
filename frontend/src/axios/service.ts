@@ -37,7 +37,6 @@ axiosInstance.interceptors.response.use(
     return res
   },
   (error: AxiosError) => {
-    debugger
     console.log('err： ' + error) // for debug
     const response = error.response as AxiosResponse<any>
 
@@ -74,7 +73,6 @@ const service = {
           resolve(res)
         })
         .catch((err: any) => {
-          debugger
           // 统一处理后端错误消息
           if (err.response && err.response.status !== 200) {
             // 处理401错误
