@@ -249,7 +249,6 @@ const save = async () => {
 
 
 const handleSubmit = async (formData: any) => {
-  debugger
   saveLoading.value = true
   let res
   if (actionType.value === 'edit') {

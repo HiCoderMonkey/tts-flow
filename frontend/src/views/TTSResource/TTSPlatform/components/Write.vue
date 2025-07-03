@@ -8,11 +8,13 @@ const emit = defineEmits(['submit'])
 
 const formRef = ref()
 const formData = ref({
+  id: '',
   name: '',
   type: 'volcano',
   config: {
     appid: '',
-    access_token: ''
+    access_token: '',
+    resource_id: ''
   }
 })
 
@@ -49,20 +51,23 @@ watch(
   (row) => {
     if (row) {
       formData.value = {
+        id: row.id || '',
         name: row.name || '',
         type: row.type || '',
         config: {
           appid: row.config?.appid || '',
-          access_token: row.config?.access_token || ''
+          access_token: row.config?.access_token || '',
+          resource_id: row.config?.resource_id || ''
         }
       }
       // 记录前缀
       lastTypePrefix = row.type && typeLabelMap[row.type] ? typeLabelMap[row.type] + '-' : ''
     } else {
       formData.value = {
+        id: '',
         name: '',
         type: 'volcano',
-        config: { appid: '', access_token: '' }
+        config: { appid: '', access_token: '', resource_id: '' }
       }
       lastTypePrefix = typeLabelMap['volcano'] + '-'
     }
@@ -82,16 +87,18 @@ const rules = {
   ],
   'config.access_token': [
     { required: true, message: '请输入Access Token', trigger: 'blur' }
+  ],
+  'config.resource_id': [
+    { required: true, message: '请选择Resource Id', trigger: 'change' }
   ]
 }
 
 const submit = async () => {
-  debugger
   await formRef.value.validate()
   // volcano类型校验
   if (formData.value.type === 'volcano') {
-    if (!formData.value.config.appid || !formData.value.config.access_token) {
-      ElMessage.error('请填写AppID和Access Token')
+    if (!formData.value.config.appid || !formData.value.config.access_token || !formData.value.config.resource_id) {
+      ElMessage.error('请填写AppID、Access Token 和 Resource Id')
       return
     }
   }
@@ -101,7 +108,7 @@ const submit = async () => {
 const initialForm = {
   name: '',
   type: 'volcano',
-  config: { appid: '', access_token: '' }
+  config: { appid: '', access_token: '', resource_id: '' }
 }
 
 const resetForm = () => {
@@ -130,6 +137,12 @@ defineExpose({ submit })
       </el-form-item>
       <el-form-item label="Access Token" prop="config.access_token">
         <el-input v-model="formData.config.access_token" type="password" placeholder="请输入火山引擎Access Token" show-password />
+      </el-form-item>
+      <el-form-item label="Resource Id" prop="config.resource_id">
+        <el-select v-model="formData.config.resource_id" placeholder="请选择Resource Id">
+          <el-option label="大模型语音合成及混音" value="volc.service_type.10029" />
+          <el-option label="声音复刻2.0" value="volc.megatts.default" />
+        </el-select>
       </el-form-item>
     </template>
   </el-form>

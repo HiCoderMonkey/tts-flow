@@ -50,7 +50,6 @@ class BaseNodeView extends HtmlNode {
     
     rootEl.appendChild(this.root)
     if(!this.vm){
-      debugger
       this.vm = createApp({
         render: () =>
           h(this.vueComponent, {

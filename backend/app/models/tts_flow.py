@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from beanie import Document, Indexed
 from pydantic import Field
 from app.utils.datetime_utils import utc_now
@@ -8,6 +8,8 @@ from app.utils.datetime_utils import utc_now
 class TTSFlow(Document):
     """TTS工作流模型"""
     name: Indexed(str)  # 工作流名称
+    voiceId: Optional[str] = Field(None, description="音色ID")
+    voiceName: Optional[str] = Field(None, description="音色名称")
     flow_config: Dict[str, Any] = Field(default_factory=dict)  # flow配置（JSON）
     created_at: datetime = Field(default_factory=utc_now)  # 创建时间
     updated_at: datetime = Field(default_factory=utc_now)  # 更新时间
@@ -19,6 +21,8 @@ class TTSFlow(Document):
         json_schema_extra = {
             "example": {
                 "name": "默认TTS工作流",
+                "voiceId": "voice_123",
+                "voiceName": "小冰音色",
                 "flow_config": {
                     "steps": [
                         {

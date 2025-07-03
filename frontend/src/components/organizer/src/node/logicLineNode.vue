@@ -84,17 +84,14 @@ export default {
         this.graphModel.popover.hide(this.popoverItemKey)
     },
     handleIconClick(e) {
-      debugger
       this.iconEvent = e
       this.graphModel.eventCenter.emit(`edge:update-model`, this.model)
     },
     goCondition() {
-      debugger
       this.graphModel.eventCenter.emit(`edge:option-click`, this.model)
       this.popVisible = false
     },
     insertNode() {
-      debugger
       const { clientX, clientY, offsetX, offsetY } = this.iconEvent
       const point = this.graphModel.getPointByClient({
         x: clientX - offsetX + 16,

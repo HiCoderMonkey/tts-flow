@@ -16,7 +16,7 @@
 import { ref, watch } from 'vue'
 import { ElInput } from 'element-plus'
 
-const props = defineProps<{ modelValue: string }>()
+const props = defineProps<{ modelValue: string; data_id: string }>()
 const emit = defineEmits(['update:modelValue'])
 
 const localValue = ref(props.modelValue)

@@ -11,11 +11,17 @@
     </div>
 
     <div class="canvas-content">
+      <div v-if="loading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>加载中...</p>
+      </div>
       <logic-panel
+        v-else
         ref="logicPanelRef"
         class="logic-panel-wrapper"
         :context="context"
         :info="info"
+        :data_id="flowId"
         @update-logic-list="context.logicList = $event"
       />
     </div>
@@ -38,6 +44,7 @@ const router = useRouter()
 const flowId = ref(route.params.id as string)
 const flowName = ref('')
 const logicPanelRef = ref()
+const loading = ref(true)
 
 // 画布上下文
 const context = reactive(new Context({ logicList: [] }))
@@ -47,20 +54,23 @@ const info = ref(undefined)
 const getFlowDetail = async () => {
   try {
     const res = await getTTSFlow(flowId.value)
-    const flowData = res as any
-
-    flowName.value = flowData.name
+    const flowData = (res as any).data || {}
+    flowName.value = flowData.name || ''
 
     // 如果有现有的flow_config，加载到画布
     if (flowData.flow_config && flowData.flow_config.logicList) {
-      context.logicList = []
+      context.logicList = flowData.flow_config.logicList
     } else {
       // 默认配置
       context.logicList = []
     }
+    
+    // 数据加载完成，关闭 loading
+    loading.value = false
   } catch (error) {
     console.error('获取工作流详情失败:', error)
     ElMessage.error('获取工作流详情失败')
+    loading.value = false
   }
 }
 
@@ -141,5 +151,28 @@ onMounted(() => {
   height: 100%;
   background: #eaecef;
   border: 1px solid #ccc;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #409eff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>

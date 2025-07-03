@@ -142,7 +142,6 @@ export default {
       return (this.model.getNodeClassName && this.model.getNodeClassName()) || ''
     },
     getStatus() {
-      debugger
       console.log('this.model.getProperties() --->>>', this.model.properties)
       return this.model.getProperties().status
     },

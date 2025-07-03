@@ -82,7 +82,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     detail: { span: 24 }
   },
   {
-    field: 'platform_id',
+    field: 'platformName',
     label: 'TTS平台',
     search: { component: 'Input' },
     form: { component: 'Input' },
@@ -96,7 +96,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     detail: {}
   },
   {
-    field: 'created_at',
+    field: 'createTime',
     label: '创建时间',
     search: { hidden: true },
     form: { hidden: true },
@@ -158,7 +158,6 @@ const dialogVisible = ref(false)
 const dialogTitle = ref('')
 const currentRow = ref<TTSVoice | null>(null)
 const actionType = ref('')
-
 const AddAction = () => {
   dialogTitle.value = '新增音色'
   currentRow.value = {
@@ -173,6 +172,7 @@ const AddAction = () => {
     extensionJson: ''
   } as any
   dialogVisible.value = true
+  saveLoading.value = false
   actionType.value = ''
 }
 
@@ -191,6 +191,7 @@ const action = (row: TTSVoice, type: string) => {
   actionType.value = type
   currentRow.value = row
   dialogVisible.value = true
+  saveLoading.value = false
 }
 
 const writeRef = ref<any>()

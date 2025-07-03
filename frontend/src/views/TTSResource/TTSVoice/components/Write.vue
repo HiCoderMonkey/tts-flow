@@ -9,6 +9,7 @@ const emit = defineEmits(['submit'])
 
 const formRef = ref()
 const formData = ref({
+  id: '',
   name: '',
   platformId: '',
   roleId: '',
@@ -16,6 +17,29 @@ const formData = ref({
 })
 
 const platformList = ref<TTSPlatform[]>([])
+
+// 记录上次平台前缀，便于切换平台时替换前缀
+let lastPlatformPrefix = ''
+
+const handlePlatformChange = (val: string) => {
+  const selectedPlatform = platformList.value.find(p => p.id === val)
+  const prefix = selectedPlatform ? selectedPlatform.name + '-' : ''
+  // 如果原来有前缀，去掉再加新前缀
+  if (lastPlatformPrefix && formData.value.name.startsWith(lastPlatformPrefix)) {
+    formData.value.name = formData.value.name.slice(lastPlatformPrefix.length)
+  }
+  // 新前缀加上
+  formData.value.name = prefix + formData.value.name.replace(/^[-]+/, '')
+  lastPlatformPrefix = prefix
+}
+
+const handlePlatformClear = () => {
+  // 清除平台时去掉前缀
+  if (lastPlatformPrefix && formData.value.name.startsWith(lastPlatformPrefix)) {
+    formData.value.name = formData.value.name.slice(lastPlatformPrefix.length)
+  }
+  lastPlatformPrefix = ''
+}
 
 const loadPlatformList = async () => {
   try {
@@ -36,6 +60,7 @@ watch(
   (row) => {
     if (row) {
       formData.value = {
+        id: row.id || '',
         name: row.name || '',
         platformId: (row as any).platformId || '',
         roleId: (row as any).roleId || '',
@@ -46,13 +71,18 @@ watch(
         const ext = JSON.parse(formData.value.extensionJson || '{}')
         if (ext.roleId) formData.value.roleId = ext.roleId
       } catch {}
+      // 记录前缀
+      const selectedPlatform = platformList.value.find(p => p.id === formData.value.platformId)
+      lastPlatformPrefix = selectedPlatform ? selectedPlatform.name + '-' : ''
     } else {
       formData.value = {
+        id: '',
         name: '',
         platformId: '',
         roleId: '',
         extensionJson: '',
       }
+      lastPlatformPrefix = ''
     }
   },
   { immediate: true, deep: true }
@@ -76,6 +106,7 @@ const submit = async () => {
   const ext = formData.value.extensionJson ? JSON.parse(formData.value.extensionJson) : {}
   ext.roleId = formData.value.roleId
   emit('submit', {
+    id: formData.value.id,
     name: formData.value.name,
     platformId: formData.value.platformId,
     roleId: formData.value.roleId,
@@ -88,13 +119,13 @@ defineExpose({ submit })
 
 <template>
   <el-form ref="formRef" :model="formData" :rules="rules" label-width="150px">
-    <el-form-item label="音色名称" prop="name">
-      <el-input v-model="formData.name" placeholder="请输入音色名称" />
-    </el-form-item>
     <el-form-item label="TTS平台" prop="platformId">
-      <el-select v-model="formData.platformId" placeholder="请选择TTS平台">
+      <el-select v-model="formData.platformId" placeholder="请选择TTS平台" clearable @change="handlePlatformChange" @clear="handlePlatformClear">
         <el-option v-for="platform in platformList" :key="platform.id" :label="platform.name" :value="platform.id" />
       </el-select>
+    </el-form-item>
+    <el-form-item label="音色名称" prop="name">
+      <el-input v-model="formData.name" placeholder="请输入音色名称" />
     </el-form-item>
     <el-form-item label="角色ID" prop="roleId">
       <el-input v-model="formData.roleId" placeholder="请输入角色ID" />

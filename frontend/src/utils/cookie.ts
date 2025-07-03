@@ -11,7 +11,6 @@ const TOKEN_KEY = 'access_token'
  * @param days 过期天数
  */
 export function setCookie(name: string, value: string, days: number = 7): void {
-  debugger
   const expires = new Date()
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
   document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`

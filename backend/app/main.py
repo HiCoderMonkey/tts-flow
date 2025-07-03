@@ -16,6 +16,7 @@ from app.core.exceptions import (
     NotFoundException,
     ConflictException
 )
+import os
 
 
 @asynccontextmanager
@@ -103,9 +104,8 @@ app.add_middleware(
 )
 
 # 挂载静态文件
-import os
-static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
+from app.core.constants import AppConstants
+app.mount("/static", StaticFiles(directory=AppConstants.STATIC_DIR), name="static")
 
 # 包含API路由
 app.include_router(api_router, prefix="/api/v1")
@@ -131,6 +131,5 @@ async def health_check():
 async def custom_docs():
     """自定义API文档页面"""
     from fastapi.responses import FileResponse
-    import os
     docs_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "docs.html")
     return FileResponse(docs_path) 

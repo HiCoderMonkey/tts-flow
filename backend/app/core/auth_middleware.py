@@ -73,12 +73,17 @@ class AuthMiddleware:
     async def _authenticate_user(self, request: Request) -> Optional[User]:
         """认证用户"""
         try:
-            # 获取Authorization头
+            # 优先获取Authorization头
             auth_header = request.headers.get("Authorization")
-            if not auth_header or not auth_header.startswith("Bearer "):
+            token = None
+            if auth_header and auth_header.startswith("Bearer "):
+                token = auth_header.split(" ", 1)[1]
+            else:
+                # 如果没有，再取cookie
+                token = request.cookies.get("access_token")
+            if not token:
                 return None
             
-            token = auth_header.split(" ")[1]
             payload = verify_token(token)
             if not payload:
                 return None

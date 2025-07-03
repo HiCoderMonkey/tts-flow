@@ -52,6 +52,7 @@
     "mitt": "^3.0.1",
     "monaco-editor": "^0.52.2",
     "nprogress": "^0.2.0",
+    "pcm-player": "^0.0.18",
     "pinia": "^3.0.0",
     "pinia-plugin-persistedstate": "^4.2.0",
     "qrcode": "^1.5.4",

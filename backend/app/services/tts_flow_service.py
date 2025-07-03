@@ -20,12 +20,14 @@ class TTSFlowService:
         if existing_flow:
             raise BusinessException(
                 message="工作流名称已存在",
-                code=ErrorCode.RESOURCE_ALREADY_EXISTS
+                code=ErrorCode.DATA_ALREADY_EXISTS
             )
         
         # 创建新工作流
         tts_flow = TTSFlow(
             name=tts_flow_create.name,
+            voiceId=tts_flow_create.voiceId,
+            voiceName=tts_flow_create.voiceName,
             flow_config=tts_flow_create.flow_config
         )
         
@@ -69,10 +71,10 @@ class TTSFlowService:
         # 检查名称唯一性
         if "name" in update_data:
             existing_flow = await TTSFlow.find_one({"name": update_data["name"]})
-            if existing_flow and existing_flow.id != flow_id:
+            if existing_flow and str(existing_flow.id) != flow_id:
                 raise ConflictException(
                     message="工作流名称已存在",
-                    code=ErrorCode.RESOURCE_ALREADY_EXISTS
+                    code=ErrorCode.DATA_ALREADY_EXISTS
                 )
         
         # 更新工作流

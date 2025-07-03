@@ -13,39 +13,15 @@
   >
     <div v-if="panelType !== 'condition'">
       <div class="setter-title">节点名称</div>
-      <name-setter v-model="name" />
+      <name-setter v-model="name" :data_id="data_id" />
     </div>
     <div v-if="panelType === 'ttsTextChunk'">
       <div class="setter-title">文本块信息</div>
-      <TtsTextChunkSetter v-model="ttsTextChunkData" />
+      <TtsTextChunkSetter v-model="ttsTextChunkData" :data_id="data_id" :currentModel="currentModel" />
     </div>
     <div v-if="panelType === 'spaceVoid'">
      <div class="setter-title">留白设置</div>
      <SpaceVoidSetter v-model="spaceData" />
-   </div>
-    <div v-if="panelType === 'action'">
-      <div class="setter-title">设置行为</div>
-      <action-setter v-model="actions" :context="context" :current="currentModel" :lf="lf" />
-    </div>
-    <div v-if="panelType === 'condition'">
-      <div class="setter-title">设置条件</div>
-      <condition-setter v-model="condition" :context="context" ref="edgeProperties" :lf="lf" />
-    </div>
-    <div v-if="panelType === 'event'">
-      <div class="setter-title">设置事件</div>
-      <event-setter v-model="event" :context="context" :current="currentModel" :lf="lf" />
-    </div>
-    <div v-if="panelType === 'ds'">
-      <div class="setter-title">设置请求</div>
-      <ds-setter v-model="ds" :context="context" :current="currentModel" :lf="lf" />
-    </div>
-    <div v-if="panelType === 'pageJump'">
-      <div class="setter-title">设置跳转</div>
-      <page-jump-setter v-model="pageJump" :lf="lf" :context="context" :current="currentModel" />
-    </div>
-    <div v-if="panelType === 'dc'">
-      <div class="setter-title">数据转换</div>
-      <dc-setter v-model="dc" :lf="lf" :context="context" :current="currentModel" />
     </div>
     <el-button
       type="primary"
@@ -75,7 +51,7 @@ import TtsTextChunkSetter from './ttsTextChunkSetter.vue'
 import SpaceVoidSetter from './spaceVoidSetter.vue'
 import { ElDrawer, ElButton } from 'element-plus'
 
-const props = defineProps<{ lf: any; context: any }>()
+const props = defineProps<{ lf: any; context: any; data_id: string }>()
 const emit = defineEmits(['submit'])
 
 const panelType = ref('')
@@ -113,7 +89,6 @@ onMounted(() => {
   })
   // 点击节点处理
   props.lf.on('node:select-click', (model: any) => {
-    debugger
     console.log('model ===>>>', model)
     currentModel.value = model
     const properties = model.getProperties()
@@ -141,7 +116,6 @@ onMounted(() => {
 })
 
 function handleSubmit() {
-  debugger
   console.log('name --->>>', name.value)
   console.log('ttsTextChunkData --->>>', ttsTextChunkData.value)
   const currentNodeVal = currentModel.value

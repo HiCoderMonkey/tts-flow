@@ -45,7 +45,7 @@ async def get_voices(
 async def create_voice(voice: TTSVoiceCreate):
     """创建音色"""
     db_voice = await tts_voice_crud.create(voice)
-    return {
+    return success({
         "id": str(db_voice.id),
         "name": db_voice.name,
         "platformId": db_voice.platform_id,
@@ -54,7 +54,7 @@ async def create_voice(voice: TTSVoiceCreate):
         "extensionJson": db_voice.extension_json,
         "createTime": db_voice.created_at,
         "updateTime": db_voice.updated_at
-    }
+    })
 
 @router.put("/voices/{voice_id}")
 async def update_voice(voice_id: str, voice: TTSVoiceUpdate):
@@ -62,7 +62,7 @@ async def update_voice(voice_id: str, voice: TTSVoiceUpdate):
     db_voice = await tts_voice_crud.update(voice_id, voice)
     if not db_voice:
         raise HTTPException(status_code=404, detail="Voice not found")
-    return {
+    return success({
         "id": str(db_voice.id),
         "name": db_voice.name,
         "platformId": db_voice.platform_id,
@@ -71,7 +71,7 @@ async def update_voice(voice_id: str, voice: TTSVoiceUpdate):
         "extensionJson": db_voice.extension_json,
         "createTime": db_voice.created_at,
         "updateTime": db_voice.updated_at
-    }
+    })
 
 @router.delete("/voices/{voice_id}")
 async def delete_voice(voice_id: str):
@@ -79,4 +79,4 @@ async def delete_voice(voice_id: str):
     db_voice = await tts_voice_crud.delete(voice_id)
     if not db_voice:
         raise HTTPException(status_code=404, detail="Voice not found")
-    return {"message": "Voice deleted successfully"} 
+    return success({"message": "Voice deleted successfully"}) 

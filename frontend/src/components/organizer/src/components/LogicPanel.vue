@@ -8,7 +8,7 @@
   >
     <div ref="container" class="logic-container"></div>
     <toolbar :lf="lf" :graph="graph" />
-    <property-panel v-if="lfReady" :lf="lf" :context="context" @submit="handleSubmit" />
+    <property-panel v-if="lfReady" :lf="lf" :data_id="data_id" :context="context" @submit="handleSubmit" />
   </div>
 </template>
 
@@ -42,7 +42,8 @@ export default {
   name: 'LogicPanel',
   props: {
     context: Object,
-    info: Object
+    info: Object,
+    data_id: String
   },
   data() {
     return {
@@ -172,7 +173,6 @@ export default {
         this.currentModel = model
       })
       this.lf.on('history:change', () => {
-        debugger
         this.setGraphDataToContext()
       })
       this.lf.on('node:add-node', ({ model, type, properties }) => {
@@ -281,7 +281,6 @@ export default {
       }
     },
     setGraphDataToContext() {
-      debugger
       const graphData = this.lf.getGraphData()
       graphData.nodes.forEach((node) => {
         if (node.properties) {
@@ -318,7 +317,6 @@ export default {
       })
     },
     handleSubmit(type) {
-      debugger
       if (type === 'ds') {
         this.checkRelatedDs()
       }

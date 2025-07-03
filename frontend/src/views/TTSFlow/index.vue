@@ -6,18 +6,17 @@ import {
   ElTableColumn,
   ElButton,
   ElInput,
-  ElDialog,
-  ElForm,
-  ElFormItem,
   ElMessage,
   ElMessageBox,
   ElPagination
 } from 'element-plus'
-import { ref, reactive, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Dialog } from '@/components/Dialog'
 import { getTTSFlows, createTTSFlow, updateTTSFlow, deleteTTSFlow } from '@/api/tts-flow'
 import type { TTSFlow, TTSFlowCreate } from '@/api/tts-flow/types'
+import Write from './components/Write.vue'
+import Detail from './components/Detail.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -33,42 +32,16 @@ const currentId = ref('')
 const total = ref(0)
 const pageIndex = ref(1)
 const pageSize = ref(10)
+const actionType = ref('') // 'create', 'edit', 'detail'
 
-// 表单数据
-const formData = reactive<TTSFlowCreate>({
-  name: '',
-  flow_config: {
-    logicList: [
-      {
-        id: 'text_input',
-        type: 'input',
-        name: '文本输入',
-        config: {
-          placeholder: '请输入要转换的文本'
-        }
-      },
-      {
-        id: 'tts_engine',
-        type: 'tts',
-        name: 'TTS引擎',
-        config: {
-          voice: 'zh-CN-XiaoxiaoNeural',
-          speed: 1.0
-        }
-      }
-    ]
-  }
-})
+// 当前行数据
+const currentRow = ref<TTSFlow | null>(null)
 
-// 表单规则
-const formRules = {
-  name: [
-    { required: true, message: '请输入工作流名称', trigger: 'blur' },
-    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
-  ]
-}
+// 表单引用
+const writeRef = ref()
+const saveLoading = ref(false)
 
-const formRef = ref()
+
 
 // 获取工作流列表
 const getTTSFlowsList = async () => {
@@ -82,8 +55,8 @@ const getTTSFlowsList = async () => {
       params.name = searchName.value
     }
     const res = await getTTSFlows(params)
-    tableData.value = res.data?.list || []
-    total.value = res.data?.total || 0
+    tableData.value = (res as any).data?.list || []
+    total.value = (res as any).data?.total || 0
   } catch (error) {
     console.error('获取工作流列表失败:', error)
     ElMessage.error('获取工作流列表失败')
@@ -108,72 +81,29 @@ const resetSearch = () => {
 // 打开创建对话框
 const openCreateDialog = () => {
   dialogTitle.value = '创建工作流'
+  actionType.value = 'create'
   isEdit.value = false
   currentId.value = ''
-  resetForm()
+  currentRow.value = null
   dialogVisible.value = true
 }
 
 // 打开编辑对话框
 const openEditDialog = (row: TTSFlow) => {
   dialogTitle.value = '编辑工作流'
+  actionType.value = 'edit'
   isEdit.value = true
   currentId.value = row.id
-  formData.name = row.name
-  formData.flow_config = JSON.parse(JSON.stringify(row.flow_config))
+  currentRow.value = row
   dialogVisible.value = true
 }
 
-// 重置表单
-const resetForm = () => {
-  formData.name = ''
-  formData.flow_config = {
-    logicList: [
-      {
-        id: 'text_input',
-        type: 'input',
-        name: '文本输入',
-        config: {
-          placeholder: '请输入要转换的文本'
-        }
-      },
-      {
-        id: 'tts_engine',
-        type: 'tts',
-        name: 'TTS引擎',
-        config: {
-          voice: 'zh-CN-XiaoxiaoNeural',
-          speed: 1.0
-        }
-      }
-    ]
-  }
-  formRef.value?.resetFields()
-}
-
-// 提交表单
-const submitForm = async () => {
-  if (!formRef.value) return
-
-  try {
-    await formRef.value.validate()
-
-    if (isEdit.value) {
-      // 编辑
-      await updateTTSFlow(currentId.value, formData)
-      ElMessage.success('更新成功')
-    } else {
-      // 创建
-      await createTTSFlow(formData)
-      ElMessage.success('创建成功')
-    }
-
-    dialogVisible.value = false
-    getTTSFlowsList()
-  } catch (error) {
-    console.error('提交失败:', error)
-    ElMessage.error(isEdit.value ? '更新失败' : '创建失败')
-  }
+// 打开详情对话框
+const openDetailDialog = (row: TTSFlow) => {
+  dialogTitle.value = '工作流详情'
+  actionType.value = 'detail'
+  currentRow.value = row
+  dialogVisible.value = true
 }
 
 // 删除工作流
@@ -239,6 +169,44 @@ const handleSizeChange = (val: number) => {
   getTTSFlowsList()
 }
 
+// 提交表单
+const handleSubmit = async (formData: any) => {
+  try {
+    saveLoading.value = true
+    
+    // 去掉 flow_config 参数
+    const { flow_config, ...submitData } = formData
+    
+    if (actionType.value === 'edit') {
+      // 编辑
+      await updateTTSFlow(currentId.value, submitData)
+      ElMessage.success('更新成功')
+    } else {
+      // 创建
+      await createTTSFlow(submitData)
+      ElMessage.success('创建成功')
+    }
+
+    dialogVisible.value = false
+    getTTSFlowsList()
+  } catch (error) {
+    console.error('提交失败:', error)
+    ElMessage.error(actionType.value === 'edit' ? '更新失败' : '创建失败')
+  } finally {
+    saveLoading.value = false
+  }
+}
+
+// 保存操作
+const save = async () => {
+  if (writeRef.value) {
+    const formData = await writeRef.value.submit()
+    if (formData) {
+      await handleSubmit(formData)
+    }
+  }
+}
+
 // 页面加载时获取数据
 onMounted(() => {
   getTTSFlowsList()
@@ -264,6 +232,12 @@ onMounted(() => {
     <!-- 表格 -->
     <ElTable :data="tableData" :loading="loading" style="width: 100%" border>
       <ElTableColumn prop="name" label="工作流名称" min-width="150" />
+      <ElTableColumn prop="voiceName" label="音色名称" min-width="150">
+        <template #default="{ row }">
+          <span v-if="row.voiceName">{{ row.voiceName }}</span>
+          <span v-else style="color: #999;">未选择音色</span>
+        </template>
+      </ElTableColumn>
       <ElTableColumn prop="flow_config" label="Flow配置" min-width="150">
         <template #default="{ row }">
           <div class="text-sm text-gray-600"> {{ getNodeCount(row.flow_config) }} 个节点 </div>
@@ -279,11 +253,12 @@ onMounted(() => {
           {{ formatTime(row.updated_at) }}
         </template>
       </ElTableColumn>
-      <ElTableColumn label="操作" width="200" fixed="right">
+      <ElTableColumn label="操作" width="280" fixed="right">
         <template #default="{ row }">
           <ElButton type="primary" size="small" @click="openEditDialog(row)"> 编辑 </ElButton>
+          <ElButton type="info" size="small" @click="openDetailDialog(row)"> 详情 </ElButton>
           <ElButton type="danger" size="small" @click="handleDelete(row)"> 删除 </ElButton>
-          <ElButton type="info" size="small" @click="goToCanvas(row)"> 配置 </ElButton>
+          <ElButton type="warning" size="small" @click="goToCanvas(row)"> 配置 </ElButton>
         </template>
       </ElTableColumn>
     </ElTable>
@@ -299,23 +274,29 @@ onMounted(() => {
       @size-change="handleSizeChange"
     />
 
-    <!-- 创建/编辑对话框 -->
-    <Dialog v-model="dialogVisible" :title="dialogTitle" width="800px" :max-height="600">
-      <ElForm ref="formRef" :model="formData" :rules="formRules" label-width="100px">
-        <ElFormItem label="工作流名称" prop="name">
-          <ElInput
-            v-model="formData.name"
-            placeholder="请输入工作流名称"
-            maxlength="50"
-            show-word-limit
-          />
-        </ElFormItem>
-      </ElForm>
+    <!-- 创建/编辑/详情对话框 -->
+    <Dialog v-model="dialogVisible" :title="dialogTitle" width="800px">
+      <Write
+        v-if="actionType === 'create' || actionType === 'edit'"
+        ref="writeRef"
+        :current-row="currentRow"
+        @submit="handleSubmit"
+      />
+      <Detail
+        v-if="actionType === 'detail'"
+        :current-row="currentRow"
+        :detail-schema="[]"
+      />
 
       <template #footer>
-        <ElButton @click="dialogVisible = false">取消</ElButton>
-        <ElButton type="primary" @click="submitForm">
-          {{ isEdit ? '更新' : '创建' }}
+        <ElButton @click="dialogVisible = false">关闭</ElButton>
+        <ElButton 
+          v-if="actionType === 'create' || actionType === 'edit'"
+          type="primary" 
+          :loading="saveLoading"
+          @click="save"
+        >
+          {{ actionType === 'edit' ? '更新' : '创建' }}
         </ElButton>
       </template>
     </Dialog>
