@@ -8,6 +8,10 @@ from app.utils.response import success
 from beanie import PydanticObjectId
 import json
 from datetime import datetime
+from fastapi.responses import StreamingResponse
+from app.models.tts_flow import TTSFlow
+from app.models.tts_voice import TTSVoice
+from app.models.tts_platform import TTSPlatform
 
 router = APIRouter(prefix="/tts-flows", tags=["TTS工作流"])
 
@@ -101,6 +105,25 @@ async def synthesize_workflow_audio(flow_id: str):
     if not flow:
         raise HTTPException(status_code=404, detail="工作流不存在")
     
+    """加载音色和平台信息"""
+    if not flow.voiceId:
+        raise HTTPException(status_code=404, detail="工作流未配置音色")
+        
+    voice = await TTSVoice.get(flow.voiceId)
+    if not voice:
+        raise HTTPException(status_code=404, detail="音色不存在")
+        
+    platform = await TTSPlatform.get(voice.platform_id)
+    if not platform:
+        raise HTTPException(status_code=404, detail="平台不存在")
+
+    
     # 创建合成器并开始处理
-    synthesizer = WorkflowSynthesizer(flow)
-    return synthesizer.synthesize_all() 
+    synthesizer = WorkflowSynthesizer(flow, voice, platform)
+
+
+    return StreamingResponse(
+            synthesizer.synthesize_all(),
+            media_type="text/event-stream; charset=utf-8",
+            headers={"Cache-Control": "no-cache", "Connection": "keep-alive"}
+        ) 
