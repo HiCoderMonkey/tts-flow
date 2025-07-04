@@ -1,10 +1,13 @@
-from typing import List
-from fastapi import APIRouter, Depends, status, Request, Query
+from typing import List, Optional
+from fastapi import APIRouter, Depends, status, Request, Query, HTTPException
 from app.api.deps import get_current_active_user
 from app.models.tts_flow import TTSFlow
 from app.schemas.tts_flow import TTSFlow as TTSFlowSchema, TTSFlowCreate, TTSFlowUpdate
 from app.services.tts_flow_service import TTSFlowService
 from app.utils.response import success
+from beanie import PydanticObjectId
+import json
+from datetime import datetime
 
 router = APIRouter(prefix="/tts-flows", tags=["TTS工作流"])
 
@@ -85,4 +88,19 @@ async def search_tts_flow_by_name(
     """根据名称搜索TTS工作流"""
     current_user = await get_current_active_user(request)
     tts_flow = await TTSFlowService.get_tts_flow_by_name(name)
-    return success(tts_flow.dict()) 
+    return success(tts_flow.dict())
+
+
+@router.get("/{flow_id}/synthesize-all")
+async def synthesize_workflow_audio(flow_id: str):
+    """工作流音频打包接口"""
+    from app.services.workflow_synthesizer import WorkflowSynthesizer
+    
+    # 获取工作流
+    flow = await TTSFlow.get(flow_id)
+    if not flow:
+        raise HTTPException(status_code=404, detail="工作流不存在")
+    
+    # 创建合成器并开始处理
+    synthesizer = WorkflowSynthesizer(flow)
+    return synthesizer.synthesize_all() 

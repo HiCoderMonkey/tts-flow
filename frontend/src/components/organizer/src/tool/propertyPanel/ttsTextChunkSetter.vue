@@ -41,7 +41,7 @@ const PATH_URL = import.meta.env.VITE_API_BASE_PATH
 
 const static_path = PATH_URL + '/static'
 
-const props = defineProps<{ modelValue: TtsTextChunkData; data_id: string; currentModel: any }>()
+const props = defineProps<{ modelValue: TtsTextChunkData; data_id: string; currentModel: any; node_name: string }>()
 const emit = defineEmits(['update:modelValue'])
 
 const localValue = ref<TtsTextChunkData>({ ...props.modelValue })
@@ -91,10 +91,10 @@ async function handleGenerateAudio() {
       body: JSON.stringify({
         flow_id: props.data_id,
         text: localValue.value.text,
-        node_id: props.currentModel.id
+        node_id: props.currentModel.id,
+        node_name: props.node_name
       })
     })
-    debugger
     if (!response.body) throw new Error('No stream body')
 
     const reader = response.body.getReader()
@@ -118,7 +118,6 @@ async function handleGenerateAudio() {
           player.feed(pcmUint8.buffer)
         }
         if (data.type === 'wav_path' && data.end) {
-          debugger
           wavPath = data.data
         }
       }

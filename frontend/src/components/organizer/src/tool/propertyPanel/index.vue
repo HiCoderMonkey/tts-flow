@@ -17,7 +17,7 @@
     </div>
     <div v-if="panelType === 'ttsTextChunk'">
       <div class="setter-title">文本块信息</div>
-      <TtsTextChunkSetter v-model="ttsTextChunkData" :data_id="data_id" :currentModel="currentModel" />
+      <TtsTextChunkSetter v-model="ttsTextChunkData" :data_id="data_id" :currentModel="currentModel" :node_name="name" />
     </div>
     <div v-if="panelType === 'spaceVoid'">
      <div class="setter-title">留白设置</div>
@@ -55,7 +55,7 @@ const props = defineProps<{ lf: any; context: any; data_id: string }>()
 const emit = defineEmits(['submit'])
 
 const panelType = ref('')
-const showDrawer = ref(true)
+const showDrawer = ref(false)
 const currentModel = ref<any>({})
 const currentNode = ref<any>({})
 const currentEdge = ref<any>(null)
@@ -127,6 +127,11 @@ function handleSubmit() {
     case 'ttsTextChunk':
       props.lf.setProperties(currentNodeVal.id, {
         nodeContentData: ttsTextChunkData.value
+      })
+      break
+    case 'spaceVoid':
+      props.lf.setProperties(currentNodeVal.id, {
+        nodeContentData: spaceData.value
       })
       break
     case 'action':
