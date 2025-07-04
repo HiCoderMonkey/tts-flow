@@ -4,8 +4,7 @@ import qs from 'qs'
 import { SUCCESS_CODE, TRANSFORM_REQUEST_DATA } from '@/constants'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { objToFormData } from '@/utils'
-import { getAccessToken, removeAccessToken } from '@/utils/cookie'
-import router from '@/router'
+import { getAccessToken } from '@/utils/cookie'
 import { useI18n } from '@/hooks/web/useI18n'
 
 const defaultRequestInterceptors = (config: InternalAxiosRequestConfig) => {
