@@ -10,6 +10,7 @@ export default {
     document: '项目文档',
     reminder: '温馨提示',
     loginOutMessage: '是否退出本系统？',
+    authExpiredMessage: '登录已过期，请重新登录',
     back: '返回',
     ok: '确定',
     cancel: '取消',
@@ -105,8 +106,8 @@ export default {
     small: '小'
   },
   login: {
-    welcome: '欢迎使用本系统',
-    message: '开箱即用的中后台管理系统',
+    welcome: '欢迎使用TTS-FLOW',
+    message: '',
     username: '用户名',
     email: '邮箱',
     emailPlaceholder: '请输入邮箱',

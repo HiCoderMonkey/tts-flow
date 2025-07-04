@@ -10,6 +10,7 @@ export default {
     document: 'Document',
     reminder: 'Reminder',
     loginOutMessage: 'Exit the system?',
+    authExpiredMessage: 'Login expired, please login again',
     back: 'Back',
     ok: 'OK',
     cancel: 'Cancel',

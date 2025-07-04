@@ -6,6 +6,7 @@ import { useUserStoreWithOut } from '@/store/modules/user'
 import { objToFormData } from '@/utils'
 import { getAccessToken, removeAccessToken } from '@/utils/cookie'
 import router from '@/router'
+import { useI18n } from '@/hooks/web/useI18n'
 
 const defaultRequestInterceptors = (config: InternalAxiosRequestConfig) => {
   // 添加token到请求头
@@ -63,24 +64,30 @@ const defaultResponseInterceptors = (response: AxiosResponse) => {
  * 处理401未授权错误
  */
 export const handleUnauthorized = async () => {
-  // 清除token
-  removeAccessToken()
-
-  // 显示确认对话框
+  const userStore = useUserStoreWithOut()
+  const { t } = useI18n()
   try {
-    // await ElMessageBox.confirm(
-    //   '登录已过期，请重新登录',
-    //   '提示',
-    //   {
-    //     confirmButtonText: '重新登录',
-    //     cancelButtonText: '取消',
-    //     type: 'warning',
-    //   }
-    // )
-    // 用户点击确认，跳转到登录页
-    // router.push('/login')
+    await ElMessageBox.confirm(
+      t('common.authExpiredMessage'),
+      t('common.reminder'),
+      {
+        confirmButtonText: t('common.ok'),
+        cancelButtonText: t('common.cancel'),
+        type: 'warning'
+      }
+    )
+    // 先手动关闭弹窗
+    ElMessageBox.close()
+    // 这里加一个微任务延迟
+    setTimeout(() => {
+      userStore.reset()
+    }, 10)
   } catch {
     // 用户点击取消，不做任何操作
+    ElMessageBox.close()
+    setTimeout(() => {
+      userStore.reset()
+    }, 10)
   }
 }
 
