@@ -1,6 +1,7 @@
 /**/node_modules
 .DS_Store
 dist
+dist-pro
 dist-ssr
 *.local
 pnpm-debug
@@ -42,3 +43,6 @@ wheels/
 venv/
 **/venv/
 .env
+
+# 部署相关
+/tts-flow-docker-compose/data

@@ -1,0 +1,53 @@
+# TTS-Flow 镜像标签配置
+
+# 镜像仓库配置
+registry:
+  url: "your-registry.com"  # 修改为您的镜像仓库地址
+  username: "your-username"  # 修改为您的用户名
+  password: "your-password"  # 修改为您的密码
+
+# 项目配置
+project:
+  name: "tts-flow"
+  version: "1.0.0"
+
+# 镜像标签配置
+images:
+  backend:
+    production:
+      - "latest"
+      - "stable"
+      - "v1.0.0"
+    development:
+      - "dev"
+      - "latest-dev"
+  
+  frontend:
+    production:
+      - "latest"
+      - "stable"
+      - "v1.0.0"
+    development:
+      - "dev"
+      - "latest-dev"
+
+# 构建配置
+build:
+  context: "../"
+  dockerfile:
+    backend_prod: "backend/Dockerfile.prod"
+    backend_dev: "backend/Dockerfile"
+    frontend_prod: "frontend/Dockerfile"
+    frontend_dev: "frontend/Dockerfile.dev"
+  
+  args:
+    BUILD_DATE: "2024-01-01T00:00:00Z"
+    VERSION: "1.0.0"
+    GIT_COMMIT: "unknown"
+
+# 推送配置
+push:
+  enabled: true
+  registry: "your-registry.com"
+  username: "your-username"
+  password: "your-password" 

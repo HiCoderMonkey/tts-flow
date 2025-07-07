@@ -10,7 +10,7 @@ const { closeAll, closeLeft, closeRight, closeOther, closeCurrent, refreshPage, 
 
 const closeAllTabs = () => {
   closeAll(() => {
-    push('/dashboard/analysis')
+    push('/tts-flow/index')
   })
 }
 
@@ -32,7 +32,7 @@ const refresh = () => {
 
 const closeCurrentTab = () => {
   closeCurrent(undefined, () => {
-    push('/dashboard/analysis')
+    push('/tts-flow/index')
   })
 }
 
@@ -41,7 +41,7 @@ const setTabTitle = () => {
 }
 
 const setAnalysisTitle = () => {
-  setTitle(`分析页-${new Date().getTime().toString()}`, '/dashboard/analysis')
+  setTitle(`TTS工作流-${new Date().getTime().toString()}`, '/tts-flow/index')
 }
 </script>
 

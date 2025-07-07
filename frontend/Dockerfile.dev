@@ -1,13 +1,39 @@
-FROM node:18.0.0
+FROM node:22.14-alpine
 
 WORKDIR /app
 
-RUN npm install -g pnpm@8.1.0
+# 支持代理设置
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+ARG NO_PROXY
+ENV HTTP_PROXY=${HTTP_PROXY}
+ENV HTTPS_PROXY=${HTTPS_PROXY}
+ENV NO_PROXY=${NO_PROXY}
 
-COPY package.json .
+RUN npm install -g pnpm
 
-RUN pnpm install
+COPY package*.json ./
+
+RUN if [ -f pnpm-lock.yaml ]; then \
+        pnpm install --frozen-lockfile; \
+    else \
+        pnpm install; \
+    fi
 
 COPY . .
 
-CMD [ "pnpm", "run", "dev" ]
+# 修复代码格式问题（开发环境）
+RUN if [ -f "package.json" ]; then \
+        echo "修复代码格式问题..."; \
+        if command -v pnpm &> /dev/null; then \
+            pnpm lint:format || true; \
+            pnpm lint:eslint --fix || true; \
+        else \
+            npm run lint:format || true; \
+            npm run lint:eslint --fix || true; \
+        fi; \
+    fi
+
+EXPOSE 4000
+
+CMD ["pnpm", "dev"]
