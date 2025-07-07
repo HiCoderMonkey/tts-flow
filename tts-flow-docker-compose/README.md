@@ -75,12 +75,12 @@ docker-compose build --no-cache
 ./build-with-proxy.sh all
 
 # 或者分别构建
-docker-compose build --no-cache backend \
+docker compose build --no-cache backend \
   --build-arg https_proxy=http://192.168.60.163:7897 \
   --build-arg http_proxy=http://192.168.60.163:7897 \
   --build-arg all_proxy=socks5://192.168.60.163:7897
 
-docker-compose build --no-cache frontend \
+docker compose build --no-cache frontend \
   --build-arg https_proxy=http://192.168.60.163:7897 \
   --build-arg http_proxy=http://192.168.60.163:7897 \
   --build-arg all_proxy=socks5://192.168.60.163:7897
