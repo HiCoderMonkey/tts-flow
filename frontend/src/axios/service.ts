@@ -49,7 +49,7 @@ axiosInstance.interceptors.response.use(
     const msg = response?.data?.data?.msg
     if (msg) {
       ElMessage.error(msg)
-      Promise.reject(msg)
+      return Promise.reject(error)
     } else {
       ElMessage.error(error.message)
       return Promise.reject(error)
@@ -62,7 +62,7 @@ axiosInstance.interceptors.response.use(defaultResponseInterceptors)
 
 const service = {
   request: (config: RequestConfig) => {
-    return new Promise((resolve) => {
+    return new Promise((resolve,reject) => {
       if (config.interceptors?.requestInterceptors) {
         config = config.interceptors.requestInterceptors(config as any)
       }
@@ -71,23 +71,8 @@ const service = {
         .request(config)
         .then((res) => {
           resolve(res)
-        })
-        .catch((err: any) => {
-          // 统一处理后端错误消息
-          if (err.response && err.response.status !== 200) {
-            // 处理401错误
-            if (err.response.status === 401) {
-              handleUnauthorized()
-              return
-            }
-
-            const msg = err.response.data?.data?.msg
-            if (msg) {
-              ElMessage.error(msg)
-            } else {
-              console.error(err.response.data)
-            }
-          }
+        }).catch((err) => {
+          return reject(err)
         })
     })
   },

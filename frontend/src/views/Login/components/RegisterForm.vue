@@ -10,6 +10,7 @@ import { IAgree } from '@/components/IAgree'
 import { registerApi } from '@/api/login'
 import { ElMessage } from 'element-plus'
 import { RegisterType } from '@/api/login/types'
+import { refThrottled } from '@vueuse/core'
 
 const emit = defineEmits(['to-login'])
 
@@ -165,29 +166,36 @@ const loading = ref(false)
 
 const loginRegister = async () => {
   const formRef = await getElFormExpose()
-  formRef?.validate(async (valid) => {
-    if (valid) {
-      try {
-        loading.value = true
-        const formData = await getFormData<RegisterType>()
-        // 调用注册接口
-        const res = await registerApi({
-          email: formData.email,
-          username: formData.username,
-          password: formData.password,
-          full_name: formData.username
-        })
-        if (res.code === 0) {
-          ElMessage.success('注册成功，请登录')
-          toLogin()
-        } else {
-          ElMessage.error(res.data?.msg || '注册失败')
-        }
-      } finally {
-        loading.value = false
+  const formData = await getFormData<RegisterType>()
+  try {
+    // 使用 await 而不是回调函数
+    await formRef?.validate()
+    loading.value = true
+  } catch (error) {
+    debugger
+    // 捕获异常，确保 loading 状态被重置
+    console.error('注册失败:', error)
+    loading.value = false
+    return
+  }
+  // 调用注册接口
+  registerApi({
+      email: formData.email,
+      username: formData.username,
+      password: formData.password,
+      full_name: formData.username
+    }).then((res) => {
+      if (res.code === 200) {
+        ElMessage.success('注册成功，请登录')
+        toLogin()
+      } else {
+        ElMessage.error(res.data?.msg || '注册失败')
       }
-    }
-  })
+    }).catch((err) => {
+      console.log('注册失败:', err)
+    }).finally(() => {
+      loading.value = false
+    })
 }
 </script>
 
