@@ -37,16 +37,10 @@ ENV NODE_OPTIONS=--max-old-space-size=4096
 RUN pnpm build:pro
 
 # 生产阶段
-FROM nginx:alpine
+FROM nginx:1.20.2
 
-# 复制构建产物到nginx根目录
-COPY --from=builder /app/dist-pro /usr/share/nginx/html
 
-# 复制nginx配置
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# 暴露端口
-EXPOSE 80
-
-# 启动nginx
-CMD ["nginx", "-g", "daemon off;"] 
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=builder /app/dist-pro /opt/web
