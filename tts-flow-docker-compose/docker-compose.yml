@@ -7,7 +7,7 @@ services:
     container_name: tts-flow-mongodb
     restart: unless-stopped
     ports:
-      - "27017:27017"
+      - "27019:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: tts_flow_password_2024
@@ -32,7 +32,7 @@ services:
     container_name: tts-flow-backend
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8003:8000"
     environment:
       - MONGODB_URL=mongodb://admin:tts_flow_password_2024@mongodb:27017
       - DATABASE_NAME=tts_flow
@@ -64,7 +64,7 @@ services:
     container_name: tts-flow-frontend
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8085:80"
     depends_on:
       backend:
         condition: service_healthy

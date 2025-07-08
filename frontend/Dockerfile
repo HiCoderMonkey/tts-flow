@@ -39,8 +39,8 @@ RUN pnpm build:pro
 # 生产阶段
 FROM nginx:alpine
 
-# 复制构建产物到nginx目录
-COPY --from=builder /app/dist-pro /usr/share/nginx/html/tts-flow-ui
+# 复制构建产物到nginx根目录
+COPY --from=builder /app/dist-pro /usr/share/nginx/html
 
 # 复制nginx配置
 COPY nginx.conf /etc/nginx/conf.d/default.conf
